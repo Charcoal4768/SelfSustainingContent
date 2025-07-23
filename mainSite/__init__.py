@@ -10,7 +10,7 @@ def make_app():
     load_dotenv()
     sql_pass = os.getenv("POSTGRES_PASSWORD")
     sql_user = os.getenv("POSTGRES_USERNAME")
-    sql_db = os.getenv("POSTGRESS_DATABASE")
+    sql_db = os.getenv("POSTGRES_DATABASE")
     sql_port = os.getenv("POSTGRES_PORT")
     sql_host = os.getenv("POSTGRES_HOST")
 
@@ -18,10 +18,10 @@ def make_app():
 
     app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
     app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://{sql_user}:{sql_pass}@{sql_host}:{sql_port}/{sql_db}"
+    print(f"postgresql://{sql_user}:{sql_pass}@{sql_host}:{sql_port}/{sql_db}")
     
     from .views import views
     from .auth import auth
-    from .models import Users
 
     app.register_blueprint(auth)
     app.register_blueprint(views)
@@ -30,7 +30,12 @@ def make_app():
 
     @LogMan.user_loader
     def load_user(user_id):
-        return Users.query.get(int(user_id))
+        from .models import Users
+        try:
+            return Users.query.get(int(user_id))
+        except (TypeError, ValueError):
+            return None
+
     
     LogMan.init_app(app)
     db.init_app(app)

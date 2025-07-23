@@ -20,11 +20,11 @@ class Users(db.Model, UserMixin):
     
 class Comments(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForiegnKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     body = db.Column(db.String(512))
     @classmethod
-    def make_comment(cls, user_id, messgae):
-        new_comment = cls(user_id=user_id,messgae=messgae)
+    def make_comment(cls, user_id, message):
+        new_comment = cls(user_id=user_id, body=message)
         db.session.add(new_comment)
         db.session.commit()
         return new_comment
