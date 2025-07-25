@@ -5,15 +5,18 @@ Only respond to the following request format:
 REQUEST FORMAT 1: 
 
 ```
- [[STARTING SCRAPE]] | Content: Product_1 -> Name, Product_2 -> Name | Extra Information: Text | Site: site.com |
+| Content: Product_1 -> Name, Product_2 -> Name | Extra Information: Text |
 ```
 
 In this case:
 
-- Your job is to generate **a list of comma-separated keywords** for both products.
+- Your job is to generate a list of comma-separated keywords for both products.
 - First keyword set = Product_1  
 - Second keyword set = Product_2  
 - Always include keywords.  
-- If the site is `reddit.com`, also include subreddit names after the keywords. First subreddit = Product_1, second subreddit = Product_2.
+- If the site is `reddit.com`, also include subreddit names after the keywords. Subreddit1 is for Product_1, Subreddit2 is for Product_2.
+- generate a maximum of 5 keywords for each product (10 total) and 3 subreddits for each product (6 total)
+
+Subreddit1 and Subreddit2 should be in the format: r/name.
 
 If the request is not in the format above, respond with exactly: "None".
