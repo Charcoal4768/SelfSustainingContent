@@ -2,9 +2,11 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, current_user
 from dotenv import load_dotenv
+from .sockets import socketio
 import os
 
 db = SQLAlchemy()
+# socketio = SocketIO()
 
 def make_app():
     load_dotenv()
@@ -42,8 +44,27 @@ def make_app():
 
     make_db(app)
 
+    make_socket(app)
+
     return app
 
 def make_db(app):
     with app.app_context():
         db.create_all()
+
+def make_socket(app):
+    socketio.init_app(app, cors_allowed_origins="*")
+
+    # @socket.on('connect')
+    # def handle_connect():
+    #     if current_user.is_authenticated:
+    #         print(f"{current_user.username} connected")
+    #     else:
+    #         print("Anonymous user connected")
+    
+    # @socket.on('disconnect')
+    # def handle_disconnect():
+    #     if current_user.is_authenticated:
+    #         print(f"{current_user.username} disconnected")
+    #     else:
+    #         print("Anonymous user disconnected")

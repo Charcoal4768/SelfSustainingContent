@@ -1,0 +1,41 @@
+{
+  "type": "object",
+  "properties": {
+    "SearchTerms1": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "SearchTerms2": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "Subreddit1": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "Subreddit2": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "propertyOrdering": [
+    "SearchTerms1",
+    "SearchTerms2",
+    "Subreddit1",
+    "Subreddit2"
+  ],
+  "required": [
+    "SearchTerms1",
+    "SearchTerms2",
+    "Subreddit1",
+    "Subreddit2"
+  ]
+}

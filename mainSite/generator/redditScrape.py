@@ -21,23 +21,6 @@ headers = {
     "Accept-Language": "en-US,en;q=0.9"
 }
 
-def build_custom_sentiment_output(posts, product1="Product A", product2="Product B"):
-    lines = []
-    lines.append(f"[[SENTIMENT]] | Product_1: {product1} | Product_2: {product2} |")
-
-    for post in posts:
-        title = post.get("title", "Untitled").strip()
-        comments = post.get("comments", [])[:5]  # limit to 5 comments per post
-
-        lines.append(f"{title}:")
-        lines.append("---")
-        for comment in comments:
-            lines.append(f"COMMENT: {comment.strip()}")
-        lines.append("---")
-
-    lines.append("|")
-    return "\n".join(lines)
-
 def subreddit_validator(subreddits):
     #check if subreddits in list are real by visiting them
     valid_subreddits = []
@@ -48,7 +31,7 @@ def subreddit_validator(subreddits):
         url = f"https://www.reddit.com/{sub}/"
         response = requests.get(url, headers=headers)
         if response.status_code == 200:
-            # for invalid subreddits: page will load a div with class text-24 s:text-20
+            # for invalid subreddits: page will load a div with class text-24 s:text-20, janky but works
             soup = BeautifulSoup(response.text, 'html.parser')
             if soup.find("div", class_="text-24 s:text-20"):
                 print(f"Subreddit {sub} is invalid.")
@@ -92,23 +75,30 @@ def extract_comment(comments, current_depth=0, max_depth=3):
 
     return extracted
 
-def extract_from_discussion(discussion_url):
-    url = discussion_url.rstrip("/") + ".json"
-    response = requests.get(url, headers=headers)
-    if not response.status_code == 200:
-        print(f"Failed to fetch {url}")
-        return None
-    
-    data = response.json()
+def extract_from_discussion(discussions):
+    for discussion in discussions:
+        urls = discussion["url"]
+        for url in urls:
+            url = url.rstrip("/") + ".json"
+            response = requests.get(url, headers=headers)
+            if not response.status_code == 200:
+                print(f"Failed to fetch {url}")
+                return None
+            
+            data = response.json()
 
-    post_info = data[0]["data"]["children"][0]["data"]
-    post_title = post_info["title"]
-    post_body = post_info["selftext"]
+            post_info = data[0]["data"]["children"][0]["data"]
+            post_title = post_info["title"]
+            # post_body = post_info["selftext"]
 
-    comments_data = data[1]["data"]["children"]
-    extracted_comments = extract_comment(comments_data)
+            comments_data = data[1]["data"]["children"]
+            extracted_comments = extract_comment(comments_data)
+            discussion["title"] = post_title
+            # discussion["body"] = post_body
+            discussion["comments"] = extracted_comments
+        del discussion["url"]
 
-    return {"title": post_title, "body": post_body, "comments": extracted_comments}
+    return discussions
 
 
 def find_discussions(url,amount):
@@ -130,6 +120,8 @@ def find_discussions(url,amount):
 
 
 def search(amount=2,terms=[[None,None],[None,None]],subreddits=[[None,None],[None,None]]):
+    if not all(isinstance(group, list) for group in terms):
+        raise ValueError("terms must be a list of lists (e.g., [['term1', 'term2'], ['term3']])")
     links_found = []
     if terms == [[None, None], [None, None]]:
         return links_found
@@ -139,9 +131,9 @@ def search(amount=2,terms=[[None,None],[None,None]],subreddits=[[None,None],[Non
         base_url = "https://www.reddit.com/search/?q={}"
         for idx in range(2):
             for term in terms[idx]:
-                url = base_url.format(subreddit, term)
+                url = base_url.format(term)
                 time.sleep(0.5)
-                links_found.extend(find_discussions(url, amount))
+                links_found.append({"url":find_discussions(url, amount)})
     else:
         base_url = "https://www.reddit.com/{}/search/?q={}"
         for idx in range(2):  # 0 = product_1, 1 = product_2
@@ -149,7 +141,7 @@ def search(amount=2,terms=[[None,None],[None,None]],subreddits=[[None,None],[Non
                 for term in terms[idx]:
                     url = base_url.format(subreddit, term)
                     time.sleep(0.5)
-                    links_found.extend(find_discussions(url, amount))
+                    links_found.append({"url":find_discussions(url, amount)})
     return links_found
 
 

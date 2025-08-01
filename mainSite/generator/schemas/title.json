@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "properties": {
+    "Title_List": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "Title_List"
+  ]
+}

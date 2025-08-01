@@ -1,0 +1,45 @@
+{
+  "type": "object",
+  "properties": {
+    "Product1_brief": {
+      "type": "string"
+    },
+    "Product2_brief": {
+      "type": "string"
+    },
+    "Product1_sentiment_score": {
+      "type": "number"
+    },
+    "Product2_sentiment_score": {
+      "type": "number"
+    },
+    "Product1_rel_comments": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "Product2_rel_comments": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "propertyOrdering": [
+    "Product1_brief",
+    "Product2_brief",
+    "Product1_sentiment_score",
+    "Product2_sentiment_score",
+    "Product1_rel_comments",
+    "Product2_rel_comments"
+  ],
+  "required": [
+    "Product1_brief",
+    "Product2_brief",
+    "Product1_sentiment_score",
+    "Product2_sentiment_score",
+    "Product1_rel_comments",
+    "Product2_rel_comments"
+  ]
+}

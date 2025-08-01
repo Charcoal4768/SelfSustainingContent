@@ -1,22 +1,130 @@
 {% extends 'base.html' %}
 {% block title %}Create an Article{% endblock %}
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flubber/0.4.2/flubber.min.js"></script>
+<script src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
+<script type="module">
+    import svg_paths from "{{ url_for('static', filename='svg_paths.js') }}";
+    document.addEventListener("DOMContentLoaded", function() {
+        const socket = io();
+        const backgroundPath = document.getElementById("status-background");
+        const secondaryPath = document.getElementById("status-secondary");
+        if (!backgroundPath || !secondaryPath) return;
+        let updatesComing = false;
+        let whileIdleDoThis;
+        function getRandomPath() {
+            return svg_paths[Math.floor(Math.random()*svg_paths.length)];
+        }
+        function morphToNewPath(newPath) {
+            const from = backgroundPath.getAttribute("d");
+            const to = newPath;
+            const interp = flubber.interpolate(from, to);
+            let start = null;
+
+            function animate(ts) {
+                if (!start) start = ts;
+                const t = Math.min((ts - start) / 2000, 1); // 2s animation
+                const d = interp(t);
+                backgroundPath.setAttribute("d", d);
+                secondaryPath.setAttribute("d", d);
+                if (t < 1) requestAnimationFrame(animate);
+            }
+
+            requestAnimationFrame(animate);
+        }
+        function startIdleLoop() {
+            whileIdleDoThis = setInterval(() => {
+                if(!updatesComing){
+                    morphToNewPath(getRandomPath());
+                }
+            }, 3000+ Math.random()*3000);
+        }
+        function stopIdleLoop() {
+            clearInterval(whileIdleDoThis);
+        }
+        startIdleLoop();
+        socket.on("status_update", (data) => {
+            updatesComing = true;
+            stopIdleLoop();
+            document.getElementById("status-box").textContent = "Status: " + data.status;
+            const statusWord = data.status.split(" ")[0].toLowerCase();
+            document.getElementById("st-ico").src = "{{url_for('static', filename='')}}" + "images/" + statusWord + ".png";
+            
+            if (data.status === "Generating") {
+                document.getElementById("generate-button").disabled = true;
+                document.getElementById("publish-article").disabled = true;
+            } else if (data.status == "Done") {
+                document.getElementById("generate-button").disabled = false;
+                document.getElementById("publish-article").disabled = false;
+            }
+            // Resume idle after 10s of no updates
+            setTimeout(() => {
+                updatesComing = false;
+                startIdleLoop();
+            }, 10000);
+        });
+    });
+</script>
+{% endblock %}
 {% block content %}
-<div class="padeLander">
-    <form method="post">
-        <div class="layer">
-            <input placeholder="Product 1" name="product1">
-            <input placeholder="Product 2" name="product2">
+<div class="page-lander">
+    <div class="section">
+        <div class="admin form-container" id="admin-input">
+            <form method="post">
+                <div class="layer">
+                    <input placeholder="Product 1" name="product1">
+                    <input placeholder="Product 2" name="product2">
+                </div>
+                <div class="layer">
+                    <input placeholder="Affiliate 1" name="affiliate1">
+                    <input placeholder="Affiliate 2" name="affiliate2">
+                </div>
+                <div class="layer">
+                    <input type="checkbox" name="includeHN" checked> Include HackerNews?
+                </div>
+                <div class="layer">
+                    <textarea placeholder="Extra Info for LLM" name="extra"></textarea>
+                </div>
+                <div class="layer">
+                    <button type="submit" id="generate-button">Generate</button>
+                </div>
+            </form>
         </div>
-        <div class="layer">
-            <input placeholder="Affiliate 1" name="affiliate1">
-            <input placeholder="Affiliate 2" name="affiliate2">
+    </div>
+    <div class="vertical-layer">
+        <div class="generator-status-container">
+            <svg class="generator-status background" viewBox="-300 -300 600 600" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                <g transform="translate(0, 0)">
+<path id="status-background" d="M152.4 -214C195.8 -178.2 228.2 -131.4 243.1 -80.2C258.1 -29 255.5 26.6 239.2 78C222.9 129.5 192.9 176.8 150.7 212.1C108.5 247.4 54.3 270.7 -1.6 272.9C-57.4 275 -114.8 256 -159.5 221.6C-204.2 187.1 -236.2 137.1 -249.1 84.1C-262 31.1 -255.8 -25 -238.5 -77.2C-221.1 -129.3 -192.5 -177.5 -150.9 -214C-109.3 -250.5 -54.7 -275.2 -0.1 -275.1C54.5 -275 108.9 -249.9 152.4 -214" fill="#ffffff"></path>
+                </g>
+            </svg>
+            <img class="generator-status symbol" src="{{ url_for('static', filename='images/status_icon.png') }}" alt="Status Icon" id="st-ico">
+            <svg class="generator-status secondary" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"><g transform="translate(285.31432282698563 306.0907392849774)"><path id="status-secondary" d="M162.7 -222C207.9 -191.2 239.5 -139.6 252.7 -85.3C266 -31 260.9 26.1 242.1 77C223.3 128 190.7 172.8 148 202.7C105.4 232.6 52.7 247.5 -0.2 247.8C-53.1 248.1 -106.2 233.7 -152.3 204.9C-198.4 176.1 -237.6 133 -256.1 81.9C-274.5 30.7 -272.3 -28.5 -252.2 -79.3C-232 -130 -193.9 -172.2 -148.9 -203.1C-103.8 -233.9 -51.9 -253.5 3.4 -258.2C58.8 -262.9 117.6 -252.8 162.7 -222" fill="#cdcdcd"></path></g></svg>
         </div>
-        <div class="layer">
-            <textarea placeholder="Extra Info for LLM" name="extra"></textarea>
+        <div id="status-box">Status: Waiting for input...</div>
+    </div>
+</div>
+
+<div class="main-page">
+    <div class="section">
+        <h2>Generated Content</h2>
+        <div id="generated-content">
+            <form method="POST">
+                <input type="hidden" name="Gen-Title" placeholder="Title" id="gen-title">
+                <input type="hidden" name="Gen-Tags" placeholder="Tags (comma-separated)" id="gen-tags">
+                <input type="hidden" name="Gen-Content" placeholder="Generated Content" id="gen-content">
+                <div class="layer">
+                    <input type="text" name="User-Title" placeholder="Title" id="user-title">
+                    <input type="text" name="User-Tags" placeholder="Tags (comma-separated)" id="user-tags">
+                </div>
+                <div class="layer">
+                    <textarea name="User-Content" placeholder="Content" id="user-content"></textarea>
+                </div>
+                <div class="layer">
+                    <button type="submit" disabled="true" id="publish-article">Publish Article</button>
+                </div>
+            </form>
         </div>
-        <div class="layer">
-            <button type="submit">Generate</button>
-        </div>
-    </form>
+    </div>
 </div>
 {% endblock %}

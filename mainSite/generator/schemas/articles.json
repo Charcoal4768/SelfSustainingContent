@@ -1,0 +1,46 @@
+{
+  "type": "object",
+  "properties": {
+    "Tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "Intro": {
+      "type": "string"
+    },
+    "Sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "heading": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        },
+        "propertyOrdering": [
+          "heading",
+          "content"
+        ],
+        "required": [
+          "heading",
+          "content"
+        ]
+      }
+    }
+  },
+  "propertyOrdering": [
+    "Tags",
+    "Intro",
+    "Sections"
+  ],
+  "required": [
+    "Tags",
+    "Intro",
+    "Sections"
+  ]
+}
