@@ -44,23 +44,23 @@ class Prompt:
 
 class SearchTermsPrompt(Prompt):
     def __init__(self, product1, product2, extra_txt="", template_path=None):
+        #TODO: Add message build function as a parameter to all prompts
         if product1 is None or product2 is None:
             raise ValueError("Product terms cannot be None")
 
         self.product1 = product1
         self.product2 = product2
         self.extra_txt = extra_txt
-
         super().__init__(
             template_filename=template_path,
             default_filename="search_terms.txt",
             default_schema_name="search_terms.json",
             model="gemini-2.5-flash"
         )
-
-        self.message = (
-            f"| Content: Product_1 -> {product1}, "
-            f"Product_2 -> {product2} | Extra Information: {extra_txt} |"
+    def build_message(self):
+        return (
+            f"| Content: Product_1 -> {self.product1}, "
+            f"Product_2 -> {self.product2} | Extra Information: {self.extra_txt} |"
         )
 
 class SentimentAnalysisPrompt(Prompt):
@@ -79,24 +79,32 @@ class SentimentAnalysisPrompt(Prompt):
             model="gemini-2.5-pro"
         )
 
-        self.message = format_sentiment_input(posts, product1, product2)
+    def build_message(self):
+        return format_sentiment_input(self.posts, self.product1, self.product2)
 
 class ArticlePrompt(Prompt):
     def __init__(self, sentiments, product1="Product A", product2="Product B", article_type="listicle", template_path=None, model="gemini-2.5-pro"):
         if not sentiments:
             raise ValueError("A sentiment analysis is required to generate the article.")
+        
+        self.product1 = product1
+        self.product2 = product2
+        self.article_type = article_type
+        self.sentiments = sentiments
 
         super().__init__(
             template_filename=template_path,
-            default_filename="articles.txt",
-            default_schema_name="articles.json",
+            default_filename="article.txt",
+            default_schema_name="article.json",
             model=model
         )
 
-        self.message = (f"A sentiment analysis has been conducted on product 1: {product1} and product 2: {product2}. Generate a user article of type {article_type} based on the community's sentiments:\n {sentiments}")
+    def build_message(self):
+        return (f"Write a {self.article_type} comparing '{self.product1}' and '{self.product2}' based on the community's sentiments:\n {self.sentiments}")
 
 class TitlePrompt(Prompt):
     def __init__(self, article_body, template_path=None, model="gemini-2.5-pro"):
+        self.article_body = article_body
         if not article_body:
             raise ValueError("Article Body cannot be empty")
 
@@ -107,9 +115,10 @@ class TitlePrompt(Prompt):
             model=model
         )
 
-        self.message = (
+    def build_message(self):
+        return (
             f"Generate a title utilizing clever psychological hooks and strong emotions to get the reader's attention and rank high in google searches.\n"
-            f"Article Body: {article_body}"
+            f"Article Body: {self.article_body}"
         )
 
 def format_sentiment_input(posts, product1="Product A", product2="Product B"):

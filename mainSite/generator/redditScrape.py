@@ -57,7 +57,7 @@ def extract_comment(comments, current_depth=0, max_depth=3):
         c_score = c_data.get("score", 0)
         c_body = c_data.get("body", "")
 
-        if c_score > 0 and len(c_body.strip()) > 15:
+        if c_score > 1 and len(c_body.strip()) > 20:
             extracted.append(c_body.strip())
 
         # Only recurse if we're still under depth

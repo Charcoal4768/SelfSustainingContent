@@ -63,6 +63,18 @@
                 startIdleLoop();
             }, 10000);
         });
+        socket.on("article_ready", (data) => {
+            // document.getElementById("gen-title").value = data.title;
+            // document.getElementById("gen-tags").value = data.tags.join(", ");
+            // document.getElementById("gen-content").value = data.content;
+
+            document.getElementById("user-title").value = data.title;
+            document.getElementById("user-tags").value = data.tags.join(", ");
+            document.getElementById("user-content").value = data.content;
+            
+            // Optional: inject straight to preview div or editor
+            document.getElementById("generated-content").scrollIntoView({behavior: "smooth"});
+        });
     });
 </script>
 {% endblock %}
@@ -78,6 +90,15 @@
                 <div class="layer">
                     <input placeholder="Affiliate 1" name="affiliate1">
                     <input placeholder="Affiliate 2" name="affiliate2">
+                </div>
+                <div class="layer">Type: 
+                    <select name="articleType" id="article-type">
+                        <option value="Pros vs Cons">PROS VS CONS</option>
+                        <option value="Why">WHY STYLE</option>
+                        <option value="How to">HOW TO</option>
+                        <option value="Listicle">LISTICLE</option>
+                        <option value="Top X">TOP X</option>
+                    </select>
                 </div>
                 <div class="layer">
                     <input type="checkbox" name="includeHN" checked> Include HackerNews?
@@ -110,9 +131,9 @@
         <h2>Generated Content</h2>
         <div id="generated-content">
             <form method="POST">
-                <input type="hidden" name="Gen-Title" placeholder="Title" id="gen-title">
+                <!-- <input type="hidden" name="Gen-Title" placeholder="Title" id="gen-title">
                 <input type="hidden" name="Gen-Tags" placeholder="Tags (comma-separated)" id="gen-tags">
-                <input type="hidden" name="Gen-Content" placeholder="Generated Content" id="gen-content">
+                <input type="hidden" name="Gen-Content" placeholder="Generated Content" id="gen-content"> -->
                 <div class="layer">
                     <input type="text" name="User-Title" placeholder="Title" id="user-title">
                     <input type="text" name="User-Tags" placeholder="Tags (comma-separated)" id="user-tags">

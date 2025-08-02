@@ -5,7 +5,11 @@ import traceback
 import threading
 from threading import Event
 from dotenv import load_dotenv
-from . import grandparent_dir, hackerNewsScrape, redditScrape, SentimentAnalysisPrompt, ArticlePrompt, TitlePrompt, sendRequest
+from . import (
+    grandparent_dir, hackerNewsScrape, redditScrape,
+    SentimentAnalysisPrompt, ArticlePrompt, TitlePrompt, 
+    sendRequest, HTMLformatter
+)
 from mainSite.sockets import socketio
 
 load_dotenv(os.path.join(grandparent_dir, '.env'))
@@ -13,16 +17,14 @@ load_dotenv(os.path.join(grandparent_dir, '.env'))
 def formatTerms(terms, progress_status):
     searchTerms1 = terms.get("SearchTerms1", [])
     searchTerms2 = terms.get("SearchTerms2", [])
-    subreddit1 = terms.get("Sebreddit1", [])
+    subreddit1 = terms.get("Subreddit1", [])
     subreddit2 = terms.get("Subreddit2", [])
 
     if not searchTerms1 or not searchTerms2:
         raise ValueError("Search terms cannot be empty")
     progress_status["status"] = "Validating subreddits..."
-    if subreddit1:
-        subreddit1 = redditScrape.subreddit_validator(subreddit1)
-    if subreddit2:
-        subreddit2 = redditScrape.subreddit_validator(subreddit2)
+    subreddit1 = redditScrape.subreddit_validator(subreddit1) if subreddit1 else []
+    subreddit2 = redditScrape.subreddit_validator(subreddit2) if subreddit2 else []
 
     return [searchTerms1, searchTerms2], [subreddit1, subreddit2]
 
@@ -54,13 +56,50 @@ def status_watcher(status_dict: dict[str,any], stop_event):
             last_seen = current
             socketio.emit("status_update", status_dict)
         time.sleep(0.5)
+    
+def article_emitter(article_data_structure: dict[str, any], title: dict[str, str]):
+    """
+    Merges article intro and all sections into a single text blob for title generation.
+    This is NOT the final formatted article. The HTML formatter is in another file.
+    Emits final content to front-end via socket.
+    """
+    lines = []
+    intro = article_data_structure.get("Intro", "").strip()
+    if intro:
+        lines.append(intro)
+        lines.append("")
 
-def startProcess(Prompt, include_hacker_news=False):
+    sections = article_data_structure.get("Sections", [])
+    for section in sections:
+        heading = section.get("heading", "").strip()
+        content = section.get("content", "").strip()
+        if heading:
+            lines.append(f"## {heading}")
+        if content:
+            lines.append(content)
+        lines.append("")
+
+    full_article_text = "\n".join(lines).strip()
+    final_title = title.get("Title", "").strip()
+    tags = article_data_structure.get("Tags", [])
+
+    print(f"\n--- Final Article Content ---\n{full_article_text}\n")
+    print(f"Title: {final_title}")
+    print(f"Tags: {tags}")
+
+    to_emit = {
+        "title": final_title,
+        "tags": tags,
+        "content": full_article_text
+    }
+
+    socketio.emit("article_ready", to_emit)
+
+def startProcess(Prompt, include_hacker_news=False, article_type="Listicle"):
     progress_status = {
         "status": "idle",
         "last": None
     }
-    status_stop_event = Event()
     posts = []
     progress_status["status"] = "idle"
     stop_event = threading.Event()
@@ -91,22 +130,24 @@ def startProcess(Prompt, include_hacker_news=False):
             t.join()
 
         progress_status["status"] = "Analyzing sentiment..."
-        sentimentmessage = SentimentAnalysisPrompt(posts,product1,product2)
-        analysed_response = sendRequest(sentimentmessage)
+        sentiment_message = SentimentAnalysisPrompt(posts,product1,product2)
+        analysed_response = sendRequest(sentiment_message)
+        print(analysed_response)
         progress_status["status"] = "Generating Article Body"
-        articlemessage = ArticlePrompt(analysed_response)
-        articlebody = sendRequest(articlemessage)
+        articlemessage = ArticlePrompt(analysed_response,product1,product2,article_type)
+        article = sendRequest(articlemessage)
         progress_status["status"] = "Making a clever title"
-        titlemessage = TitlePrompt(articlebody)
+        titlemessage = TitlePrompt(article)
         title = sendRequest(titlemessage)
-        makeAJsonThingyToReturnWhichHasTitleandBodyandTags(title,articlebody,articlebody.tags)
+        print(title)
         progress_status["status"] = "Done"
+        article_emitter(article,title)
 
     except Exception as e:
         progress_status["status"] = f"[ERROR] {e}"
         print(f"[ERROR] {e}")
         traceback.print_exception(type(e), e, e.__traceback__)
     finally:
-        status_stop_event.set()
+        stop_event.set()
 
     
