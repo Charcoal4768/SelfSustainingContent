@@ -64,16 +64,68 @@
             }, 10000);
         });
         socket.on("article_ready", (data) => {
-            // document.getElementById("gen-title").value = data.title;
-            // document.getElementById("gen-tags").value = data.tags.join(", ");
-            // document.getElementById("gen-content").value = data.content;
+            let layerV = document.createElement('div');
+            layerV.classList.add('vertical-layer');
+            let articleContainer = document.createElement('div');
+            articleContainer.classList.add('article-container');
+            let articleBodyContainer = document.createElement('div');
+            articleBodyContainer.classList.add('article-body');
+            let titleContainer = document.createElement('h2');
+            titleContainer.contentEditable = 'true';
+            titleContainer.classList.add('editable','heading');
+            titleContainer.textContent = data.title;
+            let tagsContainer = document.createElement('div');
+            tagsContainer.classList.add('editable','tags-container');
+            let article = data.content;
+            let tags = article.Tags || [];
+            for (let i = 0; i < tags.length; i++){
+                const tagData = (tags[i]||"").trim();
+                let tag = document.createElement('p');
+                tag.contentEditable = 'true';
+                // let close = document.createElement('span');
+                // close.classList.add('close');
+                // close.textContent = "×"; 
+                // tag.appendChild(close);
+                tag.classList.add('editable','tag')
+                tag.textContent = tagData;
+                tagsContainer.appendChild(tag);
+            }
+            const sections = article.Sections || [];
+            for (let i = 0; i < sections.length; i++) {
+                const section = sections[i];
+                const heading = (section.heading||"").trim();
+                const content = (section.content||"").trim();
+                
+                let sectionDiv = document.createElement('div');
+                sectionDiv.classList.add('section');
 
-            document.getElementById("user-title").value = data.title;
-            document.getElementById("user-tags").value = data.tags.join(", ");
-            document.getElementById("user-content").value = data.content;
-            
-            // Optional: inject straight to preview div or editor
-            document.getElementById("generated-content").scrollIntoView({behavior: "smooth"});
+                let headingTextarea = document.createElement('h2');
+                headingTextarea.classList.add('editable', 'subheading');
+                headingTextarea.textContent = heading;
+                headingTextarea.contentEditable = 'true';
+                sectionDiv.appendChild(headingTextarea);
+
+                let contentArea = document.createElement('div');
+                contentArea.classList.add('content');
+
+                const paragraphs = content.split('\n').map(p => p.trim()).filter(p => p.length > 0);
+                for (let j = 0; j < paragraphs.length; j++) {
+                    const line = paragraphs[j];
+                    let paraText = document.createElement('p');
+                    paraText.classList.add('editable', 'bodytext');
+                    paraText.textContent = line;
+                    paraText.contentEditable = 'true';
+                    contentArea.appendChild(paraText);
+                }
+                sectionDiv.appendChild(contentArea);
+                articleBodyContainer.appendChild(sectionDiv);
+            }
+            layerV.appendChild(titleContainer);
+            layerV.appendChild(tagsContainer);
+            articleContainer.appendChild(layerV);
+            articleContainer.appendChild(articleBodyContainer);
+            document.getElementById("generated-content").appendChild(articleContainer);
+            articleContainer.scrollIntoView();
         });
     });
 </script>
@@ -103,8 +155,9 @@
                 <div class="layer">
                     <input type="checkbox" name="includeHN" checked> Include HackerNews?
                 </div>
-                <div class="layer">
-                    <textarea placeholder="Extra Info for LLM" name="extra"></textarea>
+                <div class="vertical-layer">
+                    <textarea placeholder="Extra Info for search terms" name="extra"></textarea>
+                    <textarea placeholder="Extra Info for article body" name="article-extra"></textarea>
                 </div>
                 <div class="layer">
                     <button type="submit" id="generate-button">Generate</button>
@@ -130,21 +183,6 @@
     <div class="section">
         <h2>Generated Content</h2>
         <div id="generated-content">
-            <form method="POST">
-                <!-- <input type="hidden" name="Gen-Title" placeholder="Title" id="gen-title">
-                <input type="hidden" name="Gen-Tags" placeholder="Tags (comma-separated)" id="gen-tags">
-                <input type="hidden" name="Gen-Content" placeholder="Generated Content" id="gen-content"> -->
-                <div class="layer">
-                    <input type="text" name="User-Title" placeholder="Title" id="user-title">
-                    <input type="text" name="User-Tags" placeholder="Tags (comma-separated)" id="user-tags">
-                </div>
-                <div class="layer">
-                    <textarea name="User-Content" placeholder="Content" id="user-content"></textarea>
-                </div>
-                <div class="layer">
-                    <button type="submit" disabled="true" id="publish-article">Publish Article</button>
-                </div>
-            </form>
         </div>
     </div>
 </div>

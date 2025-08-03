@@ -4,6 +4,7 @@ Input includes sentiment analysis + user comments on 2 products, with a target a
 
 Rules:
 - Objective tone, modular format, and reader-focused
+- Denote new lines by using '\n'
 - Avoid fluff, repetition, or generic AI copy
 - Write actionable, well-sectioned content based on input data
 - Don’t invent facts. Use patterns from comments and scores

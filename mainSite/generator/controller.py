@@ -7,7 +7,7 @@ from threading import Event
 from dotenv import load_dotenv
 from . import (
     grandparent_dir, hackerNewsScrape, redditScrape,
-    SentimentAnalysisPrompt, ArticlePrompt, TitlePrompt, 
+    SentimentAnalysisPrompt, ArticlePrompt, TitlePrompt, SearchTermsPrompt,
     sendRequest, HTMLformatter
 )
 from mainSite.sockets import socketio
@@ -58,44 +58,40 @@ def status_watcher(status_dict: dict[str,any], stop_event):
         time.sleep(0.5)
     
 def article_emitter(article_data_structure: dict[str, any], title: dict[str, str]):
-    """
-    Merges article intro and all sections into a single text blob for title generation.
-    This is NOT the final formatted article. The HTML formatter is in another file.
-    Emits final content to front-end via socket.
-    """
-    lines = []
-    intro = article_data_structure.get("Intro", "").strip()
-    if intro:
-        lines.append(intro)
-        lines.append("")
+    # lines = []
+    # intro = article_data_structure.get("Intro", "").strip()
+    # if intro:
+    #     lines.append(intro)
+    #     lines.append("")
 
-    sections = article_data_structure.get("Sections", [])
-    for section in sections:
-        heading = section.get("heading", "").strip()
-        content = section.get("content", "").strip()
-        if heading:
-            lines.append(f"## {heading}")
-        if content:
-            lines.append(content)
-        lines.append("")
+    # sections = article_data_structure.get("Sections", [])
+    # for section in sections:
+    #     heading = section.get("heading", "").strip()
+    #     content = section.get("content", "").strip()
+    #     if heading:
+    #         lines.append(f"## {heading}")
+    #     if content:
+    #         lines.append(content)
+    #     lines.append("")
 
-    full_article_text = "\n".join(lines).strip()
+    # full_article_text = "\n".join(lines).strip()
     final_title = title.get("Title", "").strip()
-    tags = article_data_structure.get("Tags", [])
+    # tags = article_data_structure.get("Tags", [])
 
-    print(f"\n--- Final Article Content ---\n{full_article_text}\n")
-    print(f"Title: {final_title}")
-    print(f"Tags: {tags}")
+    # print(f"\n--- Final Article Content ---\n{full_article_text}\n")
+    # print(f"Title: {final_title}")
+    # print(f"Tags: {tags}")
 
-    to_emit = {
-        "title": final_title,
-        "tags": tags,
-        "content": full_article_text
-    }
+    # to_emit = {
+    #     "title": final_title,
+    #     "tags": tags,
+    #     "content": full_article_text
+    # }
+    to_emit = {"title":final_title,"content":article_data_structure}
 
     socketio.emit("article_ready", to_emit)
 
-def startProcess(Prompt, include_hacker_news=False, article_type="Listicle"):
+def startProcess(Prompt: SearchTermsPrompt, article_extra_info: str, include_hacker_news: bool =False, article_type="Listicle"):
     progress_status = {
         "status": "idle",
         "last": None
@@ -134,20 +130,21 @@ def startProcess(Prompt, include_hacker_news=False, article_type="Listicle"):
         analysed_response = sendRequest(sentiment_message)
         print(analysed_response)
         progress_status["status"] = "Generating Article Body"
-        articlemessage = ArticlePrompt(analysed_response,product1,product2,article_type)
+        articlemessage = ArticlePrompt(analysed_response,product1,product2,article_type,Prompt.extra_txt)
         article = sendRequest(articlemessage)
         progress_status["status"] = "Making a clever title"
         titlemessage = TitlePrompt(article)
         title = sendRequest(titlemessage)
         print(title)
-        progress_status["status"] = "Done"
         article_emitter(article,title)
+        progress_status["status"] = "Done"
 
     except Exception as e:
         progress_status["status"] = f"[ERROR] {e}"
         print(f"[ERROR] {e}")
         traceback.print_exception(type(e), e, e.__traceback__)
     finally:
+        time.sleep(1)
         stop_event.set()
 
     

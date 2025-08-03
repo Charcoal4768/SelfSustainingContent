@@ -21,7 +21,8 @@ def Adminpanel():
         article_type = request.form.get('articleType')
         includeHN = request.form.get("includeHN") == "on"
         extra = request.form.get('extra')
+        article_info = request.form.get('article-extra')
         prompt = SearchTermsPrompt(product1=product1, product2=product2, extra_txt=extra)
-        thread = Thread(target=startProcess, args=(prompt, includeHN, article_type), daemon=True)
+        thread = Thread(target=startProcess, args=(prompt, article_info, includeHN, article_type), daemon=True)
         thread.start()
     return render_template('admin.html')

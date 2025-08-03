@@ -83,7 +83,7 @@ class SentimentAnalysisPrompt(Prompt):
         return format_sentiment_input(self.posts, self.product1, self.product2)
 
 class ArticlePrompt(Prompt):
-    def __init__(self, sentiments, product1="Product A", product2="Product B", article_type="listicle", template_path=None, model="gemini-2.5-pro"):
+    def __init__(self, extra_instructions, sentiments, product1="Product A", product2="Product B", article_type="listicle", template_path=None, model="gemini-2.5-pro"):
         if not sentiments:
             raise ValueError("A sentiment analysis is required to generate the article.")
         
@@ -91,6 +91,7 @@ class ArticlePrompt(Prompt):
         self.product2 = product2
         self.article_type = article_type
         self.sentiments = sentiments
+        self.extra = extra_instructions
 
         super().__init__(
             template_filename=template_path,
@@ -100,7 +101,7 @@ class ArticlePrompt(Prompt):
         )
 
     def build_message(self):
-        return (f"Write a {self.article_type} comparing '{self.product1}' and '{self.product2}' based on the community's sentiments:\n {self.sentiments}")
+        return (f"Write a {self.article_type} comparing '{self.product1}' and '{self.product2}' based on the community's sentiments:\n {self.sentiments}. {self.extra}")
 
 class TitlePrompt(Prompt):
     def __init__(self, article_body, template_path=None, model="gemini-2.5-pro"):
@@ -137,7 +138,7 @@ def format_sentiment_input(posts, product1="Product A", product2="Product B"):
     lines.append("|")
     return "\n".join(lines)
 
-def sendRequest(prompt: Prompt):
+def sendRequest(prompt: Prompt, load_json: bool = True):
     response = client.models.generate_content(
         model=prompt.model,
         contents=prompt.message,
@@ -147,6 +148,6 @@ def sendRequest(prompt: Prompt):
             response_schema=prompt.schema
         )
     )
-    return json.loads(response.text)
+    return json.loads(response.text) if load_json else response.text
 
 #TODO: title promt, article prompt, etc, etc, schema not ready yet

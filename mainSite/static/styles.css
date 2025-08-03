@@ -1,15 +1,118 @@
 :root{
-    --large-font-size: ;
-    --small-font-size: ;
-    --medium-font-size: ;
+    --large-font-size: 2.5rem;
+    --medium-font-size: 1.75rem;
+    --normal-font-size: 1.125rem;
+    --small-font-size: 0.95rem;    /* tags, hints, etc */ 
+    --cool-blue: rgba(31,117,254,0.5);
+    --black: black;
+    --metal-grey:rgb(170, 170, 170);
+    --concrete-grey: rgba(126,126,116,0.8);
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/Inter_18pt-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/Inter_18pt-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/Inter_18pt-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/Inter_18pt-MediumItalic.woff2') format('woff2');
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/Inter_18pt-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/Inter_18pt-LightItalic.woff2') format('woff2');
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/Inter_18pt-ExtraLight.woff2') format('woff2');
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/Inter_18pt-ExtraLightItalic.woff2') format('woff2');
+  font-weight: 200;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/Inter_18pt-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/Inter_18pt-BoldItalic.woff2') format('woff2');
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/Inter_18pt-ExtraBold.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/Inter_18pt-ExtraBoldItalic.woff2') format('woff2');
+  font-weight: 800;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/Inter_18pt-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./fonts/Inter_18pt-BlackItalic.woff2') format('woff2');
+  font-weight: 900;
+  font-style: italic;
 }
 *{
     margin: 0;
     padding: 0;
 }
 body{
-    color: white;
     color: black;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400; /* Regular */
 }
 svg{
     /* Ensures SVGs have a shadow */
@@ -64,6 +167,88 @@ svg{
 }
 #status-box{
     text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500; /* Medium */
+}
+.editable{
+    outline: none;
+    border-radius: 0.75em;
+    margin: 5px 5px 0px;
+    padding: 10px;
+    line-height: 1.5em;
+}
+.heading{
+    font-size: var(--large-font-size);
+    text-align: center;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--metal-grey);
+    border-radius: 0;
+    font-family: 'Inter', sans-serif;
+    font-weight: 900; /* Black */
+}
+.article-container{
+    margin: auto;
+    margin-top: 2em;
+    max-width: 1000px;
+    align-self: center;
+    padding: 15px 15px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.tags-container{
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+    background: rgba(0,0,0,0.1);
+    padding: 10px;
+    border-radius: 0.75em;
+}
+p.tag{
+    position: relative;
+    border: none;
+    font-size: var(--normal-font-size);
+    background-color: grey;
+    color: white;
+    overflow: hidden;
+    line-height: var(--normal-font-size);
+    height: var(--normal-font-size);
+    padding-left: 1.5em;
+    width: fit-content;
+    font-family: 'Inter', sans-serif;
+    font-weight: 300; /* Medium */
+}
+p.tag::before{
+    content: '×';
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    line-height: 0px;
+    font-size: var(--medium-font-size);
+}
+.subheading{
+    width: 100%;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    margin-bottom: 15px;
+    font-size: 2em;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700; /* Bold */
+}
+.section{
+    text-align:left;
+}
+.content .bodytext{
+    width:95%;
+    margin: 10px;
+    border: none;
+    /* border-left: 1px solid var(--metal-grey); */
+    border-radius: 0;
+    font-size: var(--normal-font-size);
+    font-family: 'Inter', sans-serif;
+    font-weight: 500; /* Medium */
 }
 /*Rotates the background svg and slightly back and forth, sizes up, down, repeat (1x size -> 1.2x -> 1x)*/
 @keyframes bobble-a {
@@ -110,4 +295,26 @@ svg{
     81%   { transform: rotate(45deg) scale(1.15); }
     90%   { transform: rotate(-15deg) scale(1.05); }
     100%  { transform: rotate(0deg) scale(1); }
+}
+
+/* @media (max-width:2000px) {
+    .article-container{
+        width: 80%;
+        margin: auto;
+    }
+} */
+
+@media (max-width:1024px){
+    p.tag{
+        font-size: var(--small-font-size);
+        line-height: var(--small-font-size);
+        height: var(--small-font-size);
+    }
+    p.tag::before{
+        font-size: var(--normal-font-size);
+        line-height: 0;
+    }
+    .article-container{
+        width: 100%;
+    }
 }
