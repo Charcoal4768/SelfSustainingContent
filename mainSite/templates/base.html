@@ -11,10 +11,18 @@
     {% endblock %}
 </head>
 <body>
-    <nav>
-        <div class="logo"></div>
-        <div class="search"></div>
-        <div class="links"></div>
+    <nav class="container">
+        <div class="logo">NAME</div>
+        <div class="main">
+            <div class="search">
+                <textarea class="search-bar" placeholder="Search"></textarea>
+                <img class="mini-icon" src="{{url_for('static',filename='')}}/images/magnifying-glass.svg">
+            </div>
+                <div class="links">
+                <a href="/signup">SignUp</a>
+                <a href="/signup">Login</a>
+            </div>
+        </div>
     </nav>
     {% block content %}Nothing to see...{% endblock %}
 </body>

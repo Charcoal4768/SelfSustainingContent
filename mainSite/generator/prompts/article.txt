@@ -9,6 +9,7 @@ Rules:
 - Write actionable, well-sectioned content based on input data
 - Don’t invent facts. Use patterns from comments and scores
 - Match the quality of mid-tier human tech blogs or better
+- Use single asterisks for making text bold.
 
 Article styles:
 1. Pros vs Cons → Bullet or short sections, end with a verdict without bias

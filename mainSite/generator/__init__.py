@@ -95,7 +95,7 @@ class ArticlePrompt(Prompt):
 
         super().__init__(
             template_filename=template_path,
-            default_filename="article.txt",
+            default_filename="article_old.txt",
             default_schema_name="article.json",
             model=model
         )
