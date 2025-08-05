@@ -10,7 +10,11 @@ views = Blueprint('views',__name__)
 def MainPage():
     return render_template('home.html')
 
-@views.route('/create', methods=['GET', 'POST'])
+@views.route('/home')
+def RedirectHome():
+    return redirect(url_for('views.MainPage'))
+
+@views.route('/admin/generate', methods=['GET', 'POST'])
 def Adminpanel():
     '''Hookup to generator'''
     if request.method == 'POST':

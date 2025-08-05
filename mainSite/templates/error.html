@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}{{error_code}}{% endblock %}
+{% block scripts%}
+<script>
+const errorMap = {
+  404: {
+    message: "Beam me up, Scotty!",
+    image: "/images/404.svg",
+    description: "The page you requested could not be found."
+  },
+  500: {
+    message: "Internal Server Error",
+    image: "/images/500.svg",
+    description: "Something went wrong on our end. Please try again later."
+  },
+  403: {
+    message: "You Shall Not PASS!",
+    image: "/images/403.svg",
+    description: "Access Denied. You don't have permission to access this resource."
+  },
+  // Add more error codes
+  default: {
+    message: "An Unexpected Error Occurred",
+    image: "/images/generic-error.svg",
+    description: "We encountered an unexpected issue. Please try again later."
+  }
+};
+</script>
+{% endblock %}
+{% block content %}
+{% endblock %}

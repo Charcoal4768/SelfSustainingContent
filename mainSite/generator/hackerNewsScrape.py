@@ -85,6 +85,7 @@ def search(amount, terms=[[None, None], [None, None]]):
     if not terms or terms == [[None, None], [None, None]]:
         return links
     for term in terms:
+        time.sleep(0.5)
         try:
             print(f"Searching HackerNews for term: {term[0]}")
             data["query"] = term[0] if term[0] else ""

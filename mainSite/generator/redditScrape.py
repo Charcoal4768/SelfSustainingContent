@@ -101,22 +101,24 @@ def extract_from_discussion(discussions):
     return discussions
 
 
-def find_discussions(url,amount):
+def find_discussions(url, amount):
     discussions = []
-    response = requests.get(url=url,headers=headers)
+    response = requests.get(url, headers=headers)
     if response.status_code == 200:
-        soup = BeautifulSoup(response.text,'html.parser')
-
-        post_links = soup.find_all("a",{"data-testid":"post-title-text"})
-
-        for post in post_links:
-            amount -= 1
-            href = f"https://www.reddit.com{post['href']}"
-            discussions.append(href)
-            if amount == 0:
-                break
+        data = response.json()
+        posts = data.get("data", {}).get("children", [])
+        for post in posts:
+            post_data = post.get("data", {})
+            score = post_data.get("score", 0)
+            permalink = post_data.get("permalink")
+            if permalink and score >= 5:
+                discussions.append(f"https://www.reddit.com{permalink}")
+                amount -= 1
+                if amount == 0:
+                    break
     print(f"Found {len(discussions)} discussions on {url}")
     return discussions
+
 
 
 def search(amount=2,terms=[[None,None],[None,None]],subreddits=[[None,None],[None,None]]):
@@ -128,14 +130,14 @@ def search(amount=2,terms=[[None,None],[None,None]],subreddits=[[None,None],[Non
     if amount <= 0:
         return links_found
     if subreddits == [[None, None], [None, None]] or not subreddits[0] or not subreddits[1]:
-        base_url = "https://www.reddit.com/search/?q={}"
+        base_url = "https://www.reddit.com/search.json?q={}"
         for idx in range(2):
             for term in terms[idx]:
                 url = base_url.format(term)
                 time.sleep(0.5)
                 links_found.append({"url":find_discussions(url, amount)})
     else:
-        base_url = "https://www.reddit.com/{}/search/?q={}"
+        base_url = "https://www.reddit.com/{}/search.json?q={}&restrict_sr=1"
         for idx in range(2):  # 0 = product_1, 1 = product_2
             for subreddit in subreddits[idx]:
                 for term in terms[idx]:

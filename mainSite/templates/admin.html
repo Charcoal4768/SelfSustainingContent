@@ -4,7 +4,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flubber/0.4.2/flubber.min.js"></script>
 <script src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
 <script type="module">
-    import svg_paths from "{{ url_for('static', filename='svg_paths.js') }}";
+    import { getRandomPath, morphToNewPath } from "{{ url_for('static', filename='svg_animator.js') }}";
     document.addEventListener("DOMContentLoaded", function() {
         const socket = io();
         const backgroundPath = document.getElementById("status-background");
@@ -12,30 +12,10 @@
         if (!backgroundPath || !secondaryPath) return;
         let updatesComing = false;
         let whileIdleDoThis;
-        function getRandomPath() {
-            return svg_paths[Math.floor(Math.random()*svg_paths.length)];
-        }
-        function morphToNewPath(newPath) {
-            const from = backgroundPath.getAttribute("d");
-            const to = newPath;
-            const interp = flubber.interpolate(from, to);
-            let start = null;
-
-            function animate(ts) {
-                if (!start) start = ts;
-                const t = Math.min((ts - start) / 2000, 1); // 2s animation
-                const d = interp(t);
-                backgroundPath.setAttribute("d", d);
-                secondaryPath.setAttribute("d", d);
-                if (t < 1) requestAnimationFrame(animate);
-            }
-
-            requestAnimationFrame(animate);
-        }
         function startIdleLoop() {
             whileIdleDoThis = setInterval(() => {
                 if(!updatesComing){
-                    morphToNewPath(getRandomPath());
+                    morphToNewPath(backgroundPath, secondaryPath, getRandomPath());
                 }
             }, 3000+ Math.random()*3000);
         }
@@ -70,9 +50,9 @@
             articleContainer.classList.add('article-container');
             let articleBodyContainer = document.createElement('div');
             articleBodyContainer.classList.add('article-body');
-            let titleContainer = document.createElement('h2');
+            let titleContainer = document.createElement('h1');
             titleContainer.contentEditable = 'true';
-            titleContainer.classList.add('editable','heading','animate','right');
+            titleContainer.classList.add('editable','article-heading','animate','right');
             titleContainer.textContent = data.title;
             let tagsContainer = document.createElement('div');
             tagsContainer.classList.add('editable','tags-container');
@@ -100,7 +80,7 @@
                 sectionDiv.classList.add('section');
 
                 let headingTextarea = document.createElement('h2');
-                headingTextarea.classList.add('editable', 'subheading');
+                headingTextarea.classList.add('editable', 'article-subheading');
                 headingTextarea.textContent = heading;
                 headingTextarea.contentEditable = 'true';
                 sectionDiv.appendChild(headingTextarea);
@@ -112,7 +92,7 @@
                 for (let j = 0; j < paragraphs.length; j++) {
                     const line = paragraphs[j];
                     let paraText = document.createElement('p');
-                    paraText.classList.add('editable','bodytext','animate','right');
+                    paraText.classList.add('editable','article-bodytext','animate','right');
                     paraText.innerHTML = parseAsterisks(line);
                     paraText.contentEditable = 'true';
                     contentArea.appendChild(paraText);
@@ -126,7 +106,11 @@
             articleContainer.appendChild(articleBodyContainer);
             document.getElementById("generated-content").appendChild(articleContainer);
             window.observeAnimateElements(articleContainer);
-            articleContainer.scrollIntoView();
+            articleContainer.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+                inline: 'nearest'
+            });
         });
     });
 </script>
@@ -136,7 +120,7 @@
     <div class="pane-layout fw fh c">
         <div class="generator form-container animate up" id="admin-input">
             <form method="post" class="invert-color">
-                <div class="heading animate up"><h2>Generate An Article:</h2></div>
+                <div class="article-heading animate up"><h2>Generate An Article:</h2></div>
                 <div class="layer d animate right">
                     <input placeholder="Product 1" name="product1" type="text">
                     <img class="tiny-icon down" src="{{url_for('static',filename='/images/qoute-black.svg')}}">
@@ -167,14 +151,14 @@
             </form>
         </div>
         <div class="vertical-layer animate up">
-            <div class="generator-status-container">
-                <svg class="generator-status background" viewBox="-300 -300 600 600" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+            <div class="dynamic-svg-image-container">
+                <svg class="dynamic-svg-image background" viewBox="-300 -300 600 600" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
                     <g transform="translate(0, 0)">
                         <path id="status-background" d="M152.4 -214C195.8 -178.2 228.2 -131.4 243.1 -80.2C258.1 -29 255.5 26.6 239.2 78C222.9 129.5 192.9 176.8 150.7 212.1C108.5 247.4 54.3 270.7 -1.6 272.9C-57.4 275 -114.8 256 -159.5 221.6C-204.2 187.1 -236.2 137.1 -249.1 84.1C-262 31.1 -255.8 -25 -238.5 -77.2C-221.1 -129.3 -192.5 -177.5 -150.9 -214C-109.3 -250.5 -54.7 -275.2 -0.1 -275.1C54.5 -275 108.9 -249.9 152.4 -214" fill="#ffffff"></path>
                     </g>
                 </svg>
-                <img class="generator-status symbol" src="{{ url_for('static', filename='images/status_icon.png') }}" alt="Status Icon" id="st-ico">
-                <svg class="generator-status secondary" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"><g transform="translate(285.31432282698563 306.0907392849774)"><path id="status-secondary" d="M162.7 -222C207.9 -191.2 239.5 -139.6 252.7 -85.3C266 -31 260.9 26.1 242.1 77C223.3 128 190.7 172.8 148 202.7C105.4 232.6 52.7 247.5 -0.2 247.8C-53.1 248.1 -106.2 233.7 -152.3 204.9C-198.4 176.1 -237.6 133 -256.1 81.9C-274.5 30.7 -272.3 -28.5 -252.2 -79.3C-232 -130 -193.9 -172.2 -148.9 -203.1C-103.8 -233.9 -51.9 -253.5 3.4 -258.2C58.8 -262.9 117.6 -252.8 162.7 -222" fill="#cdcdcd"></path></g></svg>
+                <img class="dynamic-svg-image symbol" src="{{ url_for('static', filename='images/status_icon.png') }}" alt="Status Icon" id="st-ico">
+                <svg class="dynamic-svg-image secondary" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"><g transform="translate(285.31432282698563 306.0907392849774)"><path id="status-secondary" d="M162.7 -222C207.9 -191.2 239.5 -139.6 252.7 -85.3C266 -31 260.9 26.1 242.1 77C223.3 128 190.7 172.8 148 202.7C105.4 232.6 52.7 247.5 -0.2 247.8C-53.1 248.1 -106.2 233.7 -152.3 204.9C-198.4 176.1 -237.6 133 -256.1 81.9C-274.5 30.7 -272.3 -28.5 -252.2 -79.3C-232 -130 -193.9 -172.2 -148.9 -203.1C-103.8 -233.9 -51.9 -253.5 3.4 -258.2C58.8 -262.9 117.6 -252.8 162.7 -222" fill="#cdcdcd"></path></g></svg>
             </div>
             <div id="status-box" class="animate up">Status: Waiting for input...</div>
         </div>
@@ -183,7 +167,6 @@
 
 <div class="main-page">
     <div class="section">
-        <h2>Generated Content</h2>
         <div id="generated-content">
         </div>
     </div>

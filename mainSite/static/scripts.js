@@ -39,15 +39,14 @@ window.observeAnimateElements = function (root = document) {
 };
 
 function parseAsterisks(text) {
-    // First handle bold-italic: ***text***
+    // Bold-italic: ***text***
     text = text.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
 
-    // Then bold: **text**
-    text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    // Bold: **text**
+    text = text.replace(/(?<!\*)\*\*(?!\*)(.+?)\*\*(?!\*)/g, '<strong>$1</strong>');
 
-    // Then italic: *text*
-    text = text.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
+    // Italic: *text*
+    text = text.replace(/(?<!\*)\*(?!\*)([^*]+?)\*(?!\*)/g, '<em>$1</em>');
 
     return text;
 }
-

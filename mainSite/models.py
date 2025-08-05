@@ -7,13 +7,14 @@ class Users(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150))
     username = db.Column(db.String(150))
+    is_admin = db.Column(db.Boolean, default=False)
     comments = db.relationship('Comments', backref='user', lazy=True)
     @classmethod
     def get_user_by_email(cls, email):
         return cls.query.filter_by(email=email).first()
     @classmethod
-    def make_user(cls, email, password, username):
-        new_user = cls(email=email, password=password, username=username)
+    def make_user(cls, email, password, username, is_admin = False):
+        new_user = cls(email=email, password=password, username=username, is_admin = is_admin)
         db.session.add(new_user)
         db.session.commit()
         return new_user

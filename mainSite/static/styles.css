@@ -126,13 +126,15 @@ body{
     overflow-x: hidden;
 }
 .main-page{
-    background: linear-gradient(90deg, var(--grey), #fff);
+    background: grey;
 }
 svg{
     /* Ensures SVGs have a shadow */
     filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.2));
 }
 .page-lander{
+    background-color: black;
+    color: white;
     width: 100%;
     height: 100vh;
     justify-content: center;
@@ -158,7 +160,7 @@ svg{
     justify-content: center;
     height: fit-content;
 }
-.generator-status-container{
+.dynamic-svg-image-container{
     margin: 2em 0px 2em 0px;
     display: flex;
     position: relative;
@@ -170,22 +172,22 @@ svg{
     overflow: visible;
 }
 /*IIRC, targets all direct children*/
-.generator-status-container > *{
+.dynamic-svg-image-container > *{
     position: absolute;
     width: clamp(64px,20vw,512px);
     height: clamp(64px,20vw,512px);
     
     overflow: visible;
 }
-.generator-status.secondary{
+.dynamic-svg-image.secondary{
     z-index: 1;
     animation: bobble-chaotic-b 89s ease-in-out 0s infinite normal forwards;
 }
-.generator-status.background{
+.dynamic-svg-image.background{
     z-index: 2;
     animation: bobble-chaotic 100s ease-in-out 0s infinite normal forwards;
 }
-.generator-status.symbol{
+.dynamic-svg-image.symbol{
     z-index: 3;
     animation: bobble-b 8s ease-in-out 0s infinite normal forwards;
 }
@@ -362,7 +364,28 @@ form{
     padding: 10px;
     line-height: 1.5em;
 }
+.intro-container{
+    padding: 15px 20px;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
 .heading{
+    font-size: var(--large-font-size);
+    font-weight: 700;
+    color: inherit;
+    font-family: 'Inter',sans-serif;
+}
+.bodytext{
+    font-size: var(--normal-font-size);
+    font-family: 'Inter',sans-serif;
+    font-weight: 500;
+}
+.article-heading{
     font-size: var(--large-font-size);
     text-align: center;
     margin-bottom: 10px;
@@ -375,7 +398,7 @@ form{
     margin-top: 5%;
     margin-bottom: 5%;
 } */
-form .heading h2{
+form .article-heading h2{
     margin: 20px 0px 20px 0px;
     font-weight: 500;
     font-size: var(--large-font-size);
@@ -386,7 +409,7 @@ form h3{
     margin-left: 10px;
     margin-right: 10px;
 }
-form .heading{
+form .article-heading{
     border: none;
     text-align: left;
 }
@@ -416,6 +439,7 @@ option{
     background-color: transparent;
 }
 .article-container{
+    background-color: white;
     margin: auto;
     margin-top: 2em;
     max-width: 1000px;
@@ -435,14 +459,15 @@ option{
 }
 p.tag{
     position: relative;
+    color: white;
     border: none;
     font-size: var(--normal-font-size);
     background-color: grey;
     /* color: white; */
     overflow: hidden;
-    line-height: var(--normal-font-size);
-    height: var(--normal-font-size);
     padding-left: 1.5em;
+    align-content: center;
+    align-items: center;
     width: fit-content;
     font-family: 'Inter', sans-serif;
     font-weight: 300; /* Medium */
@@ -456,7 +481,7 @@ p.tag::before{
     line-height: 0px;
     font-size: var(--medium-font-size);
 }
-.subheading{
+.article-subheading{
     width: 100%;
     border: none;
     border-radius: 0;
@@ -469,7 +494,7 @@ p.tag::before{
 .section{
     text-align:left;
 }
-.content .bodytext{
+.content .article-bodytext{
     width:95%;
     margin: 10px;
     border: none;
@@ -492,7 +517,6 @@ p.tag::before{
 }
 .admin{
     /* background: linear-gradient(90deg, #000, #0e0e0e, var(--darker-grey)); */
-    background-color: black;
 }
 .admin input{
     border-bottom: 1px solid white;
@@ -518,11 +542,20 @@ p.tag::before{
     transform: translateX(-30px);
 }
 .animate.right.visible{
-    animation: fadeSlideRight 0.8s 300ms ease forwards;
+    animation: fadeSlideRight 0.8s 100ms ease forwards;
 }
 .article-container, 
 .article-container * {
     color: black;
+}
+.tc{
+    text-align: center;
+}
+.tr{
+    text-align: right;
+}
+.tl{
+    text-align: left;
 }
 @keyframes fadeSlideUp {
     0% {
@@ -628,7 +661,7 @@ p.tag::before{
         border: none;
         text-align: center;
     }
-    form .heading{
+    form .article-heading{
         text-align: center;
     }
     .pane-layout {
