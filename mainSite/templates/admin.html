@@ -44,8 +44,13 @@
             }, 10000);
         });
         socket.on("article_ready", (data) => {
+            let layerC = document.createElement('div');
+            layerC.classList.add('layer','c');
             let layerV = document.createElement('div');
             layerV.classList.add('vertical-layer');
+            let publishButton = document.createElement('button');
+            publishButton.innerText = "Publish";
+            publishButton.classList.add('animate','up','primary-action');
             let articleContainer = document.createElement('div');
             articleContainer.classList.add('article-container');
             let articleBodyContainer = document.createElement('div');
@@ -104,6 +109,8 @@
             layerV.appendChild(tagsContainer);
             articleContainer.appendChild(layerV);
             articleContainer.appendChild(articleBodyContainer);
+            articleContainer.appendChild(layerC);
+            layerC.appendChild(publishButton);
             document.getElementById("generated-content").appendChild(articleContainer);
             window.observeAnimateElements(articleContainer);
             articleContainer.scrollIntoView({
