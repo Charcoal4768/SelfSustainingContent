@@ -1,7 +1,8 @@
 # SelfSustainingContent
 
 **Full-stack Flask platform for automated, AI-driven content generation.**
-Please leave a star if you like my project! :)
+
+⭐ _If you like this project, please leave a star—it helps a lot!_
 
 ## Intro
 
