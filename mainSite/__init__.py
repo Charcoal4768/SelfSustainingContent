@@ -15,17 +15,27 @@ csrf = CSRFProtect()
 
 def make_app():
     load_dotenv()
-    sql_pass = os.getenv("POSTGRES_PASSWORD")
-    sql_user = os.getenv("POSTGRES_USERNAME")
-    sql_db = os.getenv("POSTGRES_DATABASE")
-    sql_port = os.getenv("POSTGRES_PORT")
-    sql_host = os.getenv("POSTGRES_HOST")
+    database_url = os.getenv("DATABASE_URL")
+
+    if not database_url:
+        # fallback for local dev
+        sql_pass = os.getenv("POSTGRES_PASSWORD")
+        sql_user = os.getenv("POSTGRES_USERNAME")
+        sql_db = os.getenv("POSTGRES_DATABASE")
+        sql_port = os.getenv("POSTGRES_PORT")
+        sql_host = os.getenv("POSTGRES_HOST")
+        database_url = f"postgresql://{sql_user}:{sql_pass}@{sql_host}:{sql_port}/{sql_db}"
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 
     app = Flask(__name__)
 
-    
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+        "connect_args": {
+            "sslmode": "require"
+        }
+    }
     app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
-    app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://{sql_user}:{sql_pass}@{sql_host}:{sql_port}/{sql_db}"
     app.config['SESSION_COOKIE_SECURE'] = not app.debug and not app.testing# Only sent over HTTPS
     app.config['SESSION_COOKIE_HTTPONLY'] = True     # JS can’t access cookie
     app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'    # Prevent CSRF
