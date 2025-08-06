@@ -37,9 +37,10 @@ Some screenshots:
 
 ```
 SelfSustainingContent/
-├── generator/        # Modular utilities for content generation, scraping, NLP, formatting, etc.
-├── static/           # CSS, JS, and images for frontend
-├── templates/        # Dynamic Jinja/Mako templates for articles and pages
+├── mainSite/  
+│    ├── generator/
+│    │         └── __init__.py
+│    └── __init__.py
 ├── app.py            # Main Flask application
 ├── requirements.txt  # Python dependencies
 └── README.md
