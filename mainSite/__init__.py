@@ -26,10 +26,8 @@ def make_app():
         sql_host = os.getenv("POSTGRES_HOST")
         database_url = f"postgresql://{sql_user}:{sql_pass}@{sql_host}:{sql_port}/{sql_db}"
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-
     app = Flask(__name__)
-
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
     app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
         "connect_args": {
             "sslmode": "require"
