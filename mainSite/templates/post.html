@@ -1,3 +1,9 @@
 {% extends 'base.html' %}
-{% block title %}Title{% endblock %}
-{% block content %}{% endblock %}
+{% block title %}{{article[0] | safe }}{% endblock %}
+{% block meta %}
+{{article[1] | safe}}
+{% endblock %}
+{% block content %}
+{{article[2] | safe}}
+
+{% endblock %}

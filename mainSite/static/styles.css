@@ -322,8 +322,12 @@ nav.container{
 }
 nav .logo{
     flex-shrink: 0;
-    font-size: var(--large-font-size);
     margin-right: clamp(20px,5%,50px);
+}
+nav .logo a{
+    text-decoration: none;
+    color: black;
+    font-size: var(--large-font-size);
 }
 nav .links{
     display: flex;
@@ -340,6 +344,20 @@ nav .links a{
 nav .main{
     display: flex;
     flex-grow: 1;
+}
+.hamburger-bars{
+    /* border: 1px solid red; */
+    display: none;
+    padding: 5px;
+    flex-direction: column;
+    gap: 20px;
+}
+.hamburger-bars > *{
+    width: 50px;
+    height: 2px;
+    background: black;
+    border-radius: 2px;
+    margin: 10px;
 }
 /*TODO: add textarea.big*/
 form{
@@ -468,6 +486,8 @@ option{
 .tags-container{
     display: flex;
     flex-wrap: wrap;
+}
+.editable.tags-container{
     margin-bottom: 15px;
     background: rgba(0,0,0,0.1);
     padding: 10px;
@@ -475,26 +495,32 @@ option{
 }
 p.tag{
     position: relative;
-    color: white;
-    border: none;
-    font-size: var(--normal-font-size);
-    background-color: grey;
-    /* color: white; */
+    color: grey;
     overflow: hidden;
-    padding-left: 1.5em;
+    padding-left: 2ch;
     align-content: center;
     align-items: center;
     width: fit-content;
     font-family: 'Inter', sans-serif;
+    font-weight: 100; /* Light */
+}
+p.editable.tag{
+    color: white;
+    background-color: grey;
+    font-size: var(--normal-font-size);
     font-weight: 300; /* Medium */
 }
 p.tag::before{
-    content: '×';
-    color: white;
+    content: '#';
+    color: blue;
     position: absolute;
     top: 50%;
     left: 5px;
     line-height: 0px;
+    font-size: var(--normal-font-size);
+}
+p.tag.editable::before{
+    content: '×';
     font-size: var(--medium-font-size);
 }
 .article-subheading{
@@ -686,5 +712,26 @@ p.tag::before{
     .layer.d{
         justify-content: center;
         align-items: center;
+    }
+}
+
+@media (max-width: 780px){
+    .search{
+        max-width: none;
+        flex-grow: 0;
+        width: fit-content;
+        padding: 10px;
+    }
+    .hamburger-bars{
+        display: block;
+    }
+    textarea.search-bar{
+        display: none;
+    }
+    nav .links{
+        display: none;
+    }
+    nav .main{
+        justify-content: flex-end;
     }
 }

@@ -1,11 +1,16 @@
+from flask_wtf import CSRFProtect
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, current_user
 from dotenv import load_dotenv
 from .sockets import socketio
+from flask_migrate import Migrate
+# from .experiments.secutiry_token import emit_token_periodically
 import os
 
 db = SQLAlchemy()
+
+csrf = CSRFProtect()
 # socketio = SocketIO()
 
 def make_app():
@@ -18,8 +23,12 @@ def make_app():
 
     app = Flask(__name__)
 
+    
     app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
     app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://{sql_user}:{sql_pass}@{sql_host}:{sql_port}/{sql_db}"
+    app.config['SESSION_COOKIE_SECURE'] = not app.debug and not app.testing# Only sent over HTTPS
+    app.config['SESSION_COOKIE_HTTPONLY'] = True     # JS can’t access cookie
+    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'    # Prevent CSRF
     print(f"postgresql://{sql_user}:{sql_pass}@{sql_host}:{sql_port}/{sql_db}")
     
     from .views import views
@@ -41,10 +50,12 @@ def make_app():
     
     LogMan.init_app(app)
     db.init_app(app)
+    csrf.init_app(app)
 
     make_db(app)
-
     make_socket(app)
+    # emit_token_periodically(socketio)
+    migrate = Migrate(app, db)
 
     return app
 

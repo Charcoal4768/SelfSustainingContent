@@ -5,10 +5,11 @@ import traceback
 import threading
 from threading import Event
 from dotenv import load_dotenv
+
 from . import (
     grandparent_dir, hackerNewsScrape, redditScrape,
     SentimentAnalysisPrompt, ArticlePrompt, TitlePrompt, SearchTermsPrompt,
-    sendRequest, HTMLformatter
+    sendRequest
 )
 from mainSite.sockets import socketio
 
@@ -76,6 +77,7 @@ def article_emitter(article_data_structure: dict[str, any], title: dict[str, str
 
     # full_article_text = "\n".join(lines).strip()
     final_title = title.get("Title", "").strip()
+    description = title.get("Description","").strip()
     # tags = article_data_structure.get("Tags", [])
 
     # print(f"\n--- Final Article Content ---\n{full_article_text}\n")
@@ -87,7 +89,7 @@ def article_emitter(article_data_structure: dict[str, any], title: dict[str, str
     #     "tags": tags,
     #     "content": full_article_text
     # }
-    to_emit = {"title":final_title,"content":article_data_structure}
+    to_emit = {"title":final_title,"content":article_data_structure,"description":description}
 
     socketio.emit("article_ready", to_emit)
 

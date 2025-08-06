@@ -3,9 +3,13 @@
   "properties": {
     "Title": {
       "type": "string"
+    },
+    "Description": {
+      "type": "string"
     }
   },
   "required": [
-    "Title"
+    "Title",
+    "Description"
   ]
 }

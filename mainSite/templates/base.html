@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';">
+    {% block meta %}
+    {% endblock %}
     <title>{% block title %}Page Title{% endblock %}</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' type='text/css' media='screen' href='{{url_for("static",filename="styles.css")}}'>
@@ -10,15 +15,21 @@
     {% block scripts %}
     {% endblock %}
 </head>
+
 <body>
     <nav class="container">
-        <div class="logo">NAME</div>
+        <div class="logo"><a href="{{url_for('views.MainPage')}}">UNFILTERED</a></div>
         <div class="main">
+            <div class="hamburger-bars">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
             <div class="search">
                 <textarea class="search-bar" placeholder="Search"></textarea>
                 <img class="mini-icon" src="{{url_for('static',filename='')}}/images/magnifying-glass.svg">
             </div>
-                <div class="links">
+            <div class="links">
                 <a href="/signup">SignUp</a>
                 <a href="/signup">Login</a>
             </div>
@@ -26,4 +37,5 @@
     </nav>
     {% block content %}Nothing to see...{% endblock %}
 </body>
+
 </html>
