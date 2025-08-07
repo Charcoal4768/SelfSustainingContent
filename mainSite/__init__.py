@@ -1,5 +1,6 @@
 from flask_wtf import CSRFProtect
-from flask import Flask
+from flask import Flask, json, render_template
+from werkzeug.exceptions import HTTPException
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, current_user
 from dotenv import load_dotenv
@@ -54,7 +55,15 @@ def make_app():
             return Users.query.get(int(user_id))
         except (TypeError, ValueError):
             return None
+        
+    @app.errorhandler(Exception)
+    def handle_exception(e):
+        # pass through HTTP errors
+        if isinstance(e, HTTPException):
+            return e
 
+        # now you're handling non-HTTP exceptions only
+        return render_template("500_generic.html", e=e), 500
     
     LogMan.init_app(app)
     db.init_app(app)

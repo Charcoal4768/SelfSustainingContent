@@ -29,9 +29,10 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll('.animate').forEach(el => {
         observer.observe(el);
     });
+    const nav = document.querySelector('nav.container');
     const search = document.querySelector('div.search');
     const fakebar = document.querySelector('.search-bar');
-    const realbar = document.querySelector('textarea#real-search-bar');
+    const realbar = document.querySelector('#real-search-bar');
     const realsearch = document.querySelector('div.real-search');
     const logo = document.querySelector('div.logo');
     const hamburger = document.querySelector('div.hamburger-bars');
@@ -63,8 +64,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     search.onclick = () => {
         console.log("Search bar clicked");
+        nav.style.display = 'none';
         realsearch.style.display = 'flex';
-        search.style.display = '';
+        search.style.display = 'none';
         logo.style.display = 'none';
         hamburger.style.display = 'none';
         links.style.display = 'none';
@@ -74,6 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!isClickInside && realsearch.style.display === 'flex') {
             // reverse all changes 
+            nav.style.display = '';
             realsearch.style.display = 'none';
             search.style.display = ''
             search.style.alignSelf = 'center';
