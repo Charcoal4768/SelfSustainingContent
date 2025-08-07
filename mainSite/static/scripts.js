@@ -35,6 +35,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const realsearch = document.querySelector('div.real-search');
     const logo = document.querySelector('div.logo');
     const hamburger = document.querySelector('div.hamburger-bars');
+    const sidemenu = document.querySelector('.burger-menu');
+    const sidemenuclose = document.querySelector('.close#burger-close');
     const links = document.querySelector('div.links');
     // let isSyncing = false;
 
@@ -51,8 +53,16 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log('Search triggered');
         }
     });
+    hamburger.onclick = () => {
+        console.log("Side menu triggered");
+        sidemenu.classList.toggle('visible');
+    }
+    sidemenuclose.onclick = () => {
+        console.log("Side menu triggered");
+        sidemenu.classList.toggle('visible');
+    }
     search.onclick = () => {
-        console.log("click detected");
+        console.log("Search bar clicked");
         realsearch.style.display = 'flex';
         search.style.display = '';
         logo.style.display = 'none';

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+     stroke="black" stroke-width="1	" stroke-linecap="round" stroke-linejoin="round" >
+  <!-- Head outline -->
+  <circle cx="12" cy="7" r="4" vector-effect="non-scaling-stroke" />
+  <!-- Shoulders / Torso outline -->
+  <path vector-effect="non-scaling-stroke" d="M4 20c0-3.3 5.3-5 8-5s8 1.7 8 5" />
+</svg>

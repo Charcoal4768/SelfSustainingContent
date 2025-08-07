@@ -47,29 +47,42 @@
         </div>
     </div>
     <div class="burger-menu">
-        <div class="close">&times;</div>
+        <div class="close" id="burger-close">&times;</div>
         <div class="icon-action">
-            <img>
-            <p>Username</p>
-            <p>Your account info</p>
+            <div class="layer">
+                <img src="{{url_for('static',filename='/images/user.svg')}}">
+                <div class="text">
+                    <h3>Username</h3>
+                    <p>Your account info</p>
+                </div>
+            </div>
         </div>
+        <div class="icon-action">
+            <div class="layer">
+                <img src="{{url_for('static',filename='/images/flame.svg')}}">
+                <div class="text">
+                    <h3>Trending</h3>
+                    <p>See whats Trending</p>
+                </div>
+            </div>
+        </div>
+        <div class="icon-action">
+            <div class="layer">
+                <img src="{{url_for('static',filename='/images/gear.svg')}}">
+                <div class="text">
+                    <h3>Settings</h3>
+                    <p>Site Settings</p>
+                </div>
+            </div>
+        </div>
+        <div class="spacer"></div>
         <div class="subheading">
             <h2>Some links to explore</h2>
         </div>
         <div class="links">
-            <div>Home</div>
-            <div>Browse</div>
-            <div>About</div>
-        </div>
-        <div class="icon-action">
-            <img>
-            <p>Trending</p>
-            <p>See what's trending</p>
-        </div>
-        <div class="icon-action">
-            <img>
-            <p>Settings</p>
-            <p>Site Settings</p>
+            <a>Home</a>
+            <a>Browse</a>
+            <a>About</a>
         </div>
     </div>
     {% block content %}Nothing to see...{% endblock %}

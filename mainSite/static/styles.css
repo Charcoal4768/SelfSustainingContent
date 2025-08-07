@@ -167,15 +167,15 @@ svg{
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: clamp(64px,20vw,512px);
+    height: clamp(128px,20vw,2048px);
     min-height: 64px;
     overflow: visible;
 }
 /*IIRC, targets all direct children*/
 .dynamic-svg-image-container > *{
     position: absolute;
-    width: clamp(64px,20vw,512px);
-    height: clamp(64px,20vw,512px);
+    width: clamp(128px,20vw,2048px);
+    height: clamp(128px,20vw,2048px);
     
     overflow: visible;
 }
@@ -347,6 +347,7 @@ nav.container{
     width: 100%;
     background-color: var(--light-grey);
     align-items: center;
+    z-index: 10;
 }
 nav .logo{
     flex-shrink: 1;
@@ -387,12 +388,25 @@ nav .main{
     border-radius: 2px;
     margin: 10px;
 }
-.burger-menu{
+.burger-menu {
+    opacity: 0;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
     background: var(--light-grey);
-    position: absolute;
+    position: fixed;
     top: 70px;
     left: 0px;
     z-index: 10;
+    padding: 5px;
+    max-width: 300px;
+    height: 100%;
+    max-height: calc(100vh - 70px);
+    transform: translateX(-30px);
+}
+.burger-menu.visible{
+    display: flex;
+    animation: fadeSlideRight 0.3s 100ms ease forwards;
 }
 .close{
     display: flex;
@@ -400,8 +414,55 @@ nav .main{
     color: red;
     width: fit-content;
     font-size: var(--medium-font-size);
-    float: right;
     padding: 0px 10px;
+}
+.burger-menu .close {
+    align-self: flex-end; /* positions it to the right inside flex parent */
+    cursor: pointer;
+}
+.icon-action{
+    padding: 15px;
+}
+.icon-action .text{
+    margin-left: 10px;
+}
+.icon-action img{
+    height: 38px;
+    width: 38px;
+}
+.icon-action h3{
+    font-weight: 500;
+    font-size: var(--normal-font-size);
+}
+.icon-action p{
+    font-weight: 100;
+    font-size: var(--small-font-size);
+}
+.burger-menu .subheading{
+    padding: 5px;
+}
+.burger-menu .links{
+    padding: 5px;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+}
+.burger-menu .links > *::after {
+    content: '→';
+    display: inline-block;
+    margin-left: 5px;
+    transition: transform 300ms ease-in;
+}
+.burger-menu .links > *:hover::after {
+    transform: translateX(20px);
+}
+.burger-menu .spacer{
+    margin: auto;
+    flex-grow: 1;
+    width: 60%;
+    border-top: 1px solid var(--concrete-grey);
+    height: max-content;
+    border-bottom: 1px solid var(--concrete-grey);
 }
 /*TODO: add textarea.big*/
 form{
@@ -616,19 +677,19 @@ p.tag.editable::before{
 }
 .animate{
     opacity: 0;
-    transition: opacity 800ms ease-out, transform 300ms ease-out;
+    transition: opacity 600ms ease-out, transform 300ms ease-out;
 }
 .animate.up {
     transform: translateY(30px);
 }
 .animate.up.visible {
-    animation: fadeSlideUp 0.8s ease forwards;
+    animation: fadeSlideUp 0.6s ease forwards;
 }
 .animate.right {
     transform: translateX(-30px);
 }
 .animate.right.visible{
-    animation: fadeSlideRight 0.8s 100ms ease forwards;
+    animation: fadeSlideRight 0.6s ease forwards;
 }
 .animate.grow.visible{
     animation: growFullWidth 0.6s ease-out forwards;
