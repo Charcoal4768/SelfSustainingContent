@@ -28,11 +28,11 @@ def make_app():
 
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-        "connect_args": {
-            "sslmode": "require"
-        }
-    }
+    # app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    #     "connect_args": {
+    #         "sslmode": "require"
+    #     }
+    # }
     app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
     app.config['SESSION_COOKIE_SECURE'] = not app.debug and not app.testing# Only sent over HTTPS
     app.config['SESSION_COOKIE_HTTPONLY'] = True     # JS can’t access cookie

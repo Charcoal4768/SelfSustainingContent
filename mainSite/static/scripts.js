@@ -10,7 +10,7 @@ const observer = new IntersectionObserver((entries) => {
                     el.classList.remove('visible');
                     observer.observe(el); // re-observe in case it got unobserved earlier
                 }
-            }, 500); 
+            }, 500);
         }
     });
 }, {
@@ -29,7 +29,51 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll('.animate').forEach(el => {
         observer.observe(el);
     });
+    const search = document.querySelector('div.search');
+    const fakebar = document.querySelector('.search-bar');
+    const realbar = document.querySelector('textarea#real-search-bar');
+    const realsearch = document.querySelector('div.real-search');
+    const logo = document.querySelector('div.logo');
+    const hamburger = document.querySelector('div.hamburger-bars');
+    const links = document.querySelector('div.links');
+    // let isSyncing = false;
+
+    fakebar.addEventListener('input', () => {realbar.value = fakebar.value});
+    realbar.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            console.log('Search triggered');
+        }
+    });
+    fakebar.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            console.log('Search triggered');
+        }
+    });
+    search.onclick = () => {
+        console.log("click detected");
+        realsearch.style.display = 'flex';
+        search.style.display = '';
+        logo.style.display = 'none';
+        hamburger.style.display = 'none';
+        links.style.display = 'none';
+    };
+    document.addEventListener('click', (event) => {
+        const isClickInside = realsearch.contains(event.target) || realbar.contains(event.target) || search.contains(event.target);
+
+        if (!isClickInside && realsearch.style.display === 'flex') {
+            // reverse all changes 
+            realsearch.style.display = 'none';
+            search.style.display = ''
+            search.style.alignSelf = 'center';
+            logo.style.display = '';
+            hamburger.style.display = '';
+            links.style.display = '';
+        }
+    });
 });
+
 
 // Expose for later use
 window.observeAnimateElements = function (root = document) {

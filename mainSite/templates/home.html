@@ -1,20 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Home{% endblock %}
 {% block scripts %}
-<script>
-    import {getRandomPath, morphToNewPath} from "{{url_for('static',filename='svg_animator.js')}}";
-    document.addEventListener("DOMContentLoaded",function(){
-        const bgPath = document.getElementById("fancy-svg-bg");
-        const fgPath = document.getElementById("faqncy-svg-fg");
-        let intervalForAnim;
-        function animationLoop(){
-            intervalForAnim = setInterval(() => {
-                morphToNewPath(bgPath,fgPath,getRandomPath());
-            },2800 + Math.random()*2000);
-        }
-        animationLoop()
-    });
-</script>
+<script src="{{url_for('static',filename='home.js')}}" type="module"></script>
 {% endblock %}
 {% block content %}
 <div class="page-lander">
