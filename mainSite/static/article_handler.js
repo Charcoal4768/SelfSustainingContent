@@ -1,9 +1,12 @@
 import { getRandomPath, morphToNewPath } from "./svg_animator.js";
 document.addEventListener("DOMContentLoaded", function () {
-    const socket = io();
+    // Explicitly specify namespace and log connection
+    const socket = io("/", { transports: ["websocket"] });
+    const PUBLISH_TOKEN = document.querySelector('meta[name="publish_token"]').getAttribute('content');
+    const ROOM_ID = document.querySelector('meta[name="room_id"]').getAttribute('content');
     const backgroundPath = document.getElementById("status-background");
     const secondaryPath = document.getElementById("status-secondary");
-    if (!backgroundPath || !secondaryPath) return;
+
     let updatesComing = false;
     let whileIdleDoThis;
     function startIdleLoop() {
@@ -13,16 +16,23 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }, 3000 + Math.random() * 3000);
     }
+
     function stopIdleLoop() {
         clearInterval(whileIdleDoThis);
     }
+
     startIdleLoop();
+
+    socket.on("connect", () => {
+        socket.emit("join_room", { room: ROOM_ID });
+    });
+
     socket.on("status_update", (data) => {
         updatesComing = true;
         stopIdleLoop();
         document.getElementById("status-box").textContent = "Status: " + data.status;
         const statusWord = data.status.split(" ")[0].toLowerCase();
-        document.getElementById("st-ico").src = "{{url_for('static', filename='')}}" + "images/" + statusWord + ".png";
+        document.getElementById("st-ico").src = "/static/images/" + statusWord + ".png";
 
         if (data.status === "Generating") {
             document.getElementById("generate-button").disabled = true;
@@ -31,12 +41,13 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("generate-button").disabled = false;
             document.getElementById("publish-article").disabled = false;
         }
-        // Resume idle after 10s of no updates
+
         setTimeout(() => {
             updatesComing = false;
             startIdleLoop();
         }, 10000);
     });
+
     socket.on("article_ready", (data) => {
         let desc_hidden = document.createElement('input');
         desc_hidden.type = "hidden";
@@ -50,6 +61,8 @@ document.addEventListener("DOMContentLoaded", function () {
         let publishButton = document.createElement('button');
         publishButton.innerText = "Publish";
         publishButton.classList.add('animate', 'up', 'primary-action');
+        publishButton.id = "article-publish";
+        publishButton.addEventListener("click", () => sendArticleRequest(PUBLISH_TOKEN)); //Wrapped in a lambda, () => so that it dosent just run send request on initialization but on click instead
         let articleContainer = document.createElement('div');
         articleContainer.classList.add('article-container');
         let articleBodyContainer = document.createElement('div');
@@ -61,16 +74,11 @@ document.addEventListener("DOMContentLoaded", function () {
         let tagsContainer = document.createElement('div');
         tagsContainer.classList.add('editable', 'tags-container');
         let article = data.content;
-        let description = data.description;
         let tags = article.Tags || [];
         for (let i = 0; i < tags.length; i++) {
             const tagData = (tags[i] || "").trim();
             let tag = document.createElement('p');
             tag.contentEditable = 'true';
-            // let close = document.createElement('span');
-            // close.classList.add('close');
-            // close.textContent = "×"; 
-            // tag.appendChild(close);
             tag.classList.add('editable', 'tag', 'animate', 'right')
             tag.textContent = tagData;
             tagsContainer.appendChild(tag);
@@ -122,25 +130,21 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
 function repackArticle() {
     const articleContainer = document.querySelector(".article-container");
     if (!articleContainer) return null;
 
     const desc = document.querySelector("#hidden-description");
-
-    // Get title
     const title = (
         articleContainer.querySelector("h1.article-heading")?.textContent || ""
     ).trim();
-
-    // Get tags
     const tags = Array.from(
         articleContainer.querySelectorAll(".tags-container > p.tag")
     )
         .map(t => (t.textContent || "").trim())
         .filter(Boolean);
 
-    // Get sections
     const sections = Array.from(
         articleContainer.querySelectorAll(".article-body .section")
     ).map(section => {
@@ -149,7 +153,7 @@ function repackArticle() {
         ).trim();
 
         const paragraphs = Array.from(section.querySelectorAll(".content p"))
-            .map(p => (p.innerText || "").trim())  // Using innerText for visible-only text
+            .map(p => (p.innerText || "").trim())
             .filter(Boolean);
 
         return {
@@ -168,23 +172,15 @@ function repackArticle() {
     };
 }
 
-// let requestToken;
-// socket.on("token_update",data => {
-//     requestToken = data.token;
-// });
-function sendArticleRequest() {
+function sendArticleRequest(token) {
     const repackedData = repackArticle();
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
-
     fetch("/api/publish", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "X-CSRF-Token": csrfToken  // <-- Send the damn token
+            "X-CSRF-Token": token
         },
-        credentials: "include",  // Send session cookie with it
+        credentials: "include",
         body: JSON.stringify(repackedData)
     });
 }
-
-document.getElementById("article-publish")?.addEventListener("click", sendArticleRequest);

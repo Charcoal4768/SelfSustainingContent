@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}New Account{% endblock %}
+{% block meta %}
+<meta property="og:title" content="Sign Up | The Unfiltered">
+<meta name="title" content="Sign Up">
+<meta property="og:description" content="Sign Up for a new account on The Unfiltered today.">
+<meta name="keywords" content="create, signup, sign up, new account, unfiltered">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Sign Up | The Unfiltered">
+<meta name="twitter:description" content="Sign Up for a new account on The Unfiltered today.">
+{% endblock %}
+{% block content %}
+<div class="page-lander">
+    <div class="pane-layout fw fh c">
+        <div class="form-container animate up" id="signup-form-container">
+            <form method="post" class="invert-color">
+                <input type="hidden" name="csrf_token" value="{{ form.csrf_token._value() }}">
+                <div class="article-heading animate up"><h2>Create An Account</h2></div>
+                <div class="sp vertical-layer animate right">
+                    <div class="layer d animate up">
+                        <input type="text" placeholder="Email" name="email" autocomplete="email">
+                    </div>
+                    <div class="layer d animate up">
+                        <input type="text" placeholder="Username" name="username" autocomplete="name">
+                    </div>
+                </div>
+                <div class="sp vertical-layer animate right">
+                    <div class="layer d animate up">
+                        <input type="password" name="password" id="entered-password" autocomplete="current-password" placeholder="Password">
+                    </div>
+                    <div class="layer d animate up">
+                        <input type="password" name="confirmpassword" id="confirm-password" autocomplete="current-password" placeholder="Confirm Password">
+                    </div>
+                </div>
+                <div class="sp layer animate up">
+                    <button type="submit" name="Sign Up">Sign Up</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

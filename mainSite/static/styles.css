@@ -160,6 +160,12 @@ svg{
     justify-content: center;
     height: fit-content;
 }
+.sp .layer{
+    margin: 15px;
+}
+.sp .vertical-layer{
+    margin: 15px;
+}
 .dynamic-svg-image-container{
     margin: 2em 0px 2em 0px;
     display: flex;
@@ -197,17 +203,25 @@ svg{
     font-weight: 700; /* Medium */
     font-size: var(--large-font-size);
 }
+.invert-color input{
+    color: white;
+}
 input{
     border: none;
+    border-bottom: 1px solid grey;
+    background: transparent;
     padding: 5px 0px;
     outline: none;
     font-size: var(--medium-font-size);
     /* transition: 600ms ease-in-out; */
 }
-input[type="text"]{
+input:autofill{
+    background: transparent;
+    color: red;
+}
+input[type="text"].limited{
     line-height: var(--medium-font-size);
     background-color: transparent;
-    border-bottom: 1px solid black;
     width: 10ch;
     max-width: 50ch;
     margin: 0px 20px 20px;
@@ -708,6 +722,35 @@ p.tag.editable::before{
 }
 .tl{
     text-align: left;
+}
+.flash-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 0 1rem;
+}
+
+.flash {
+  padding: 10px 15px;
+  margin: 10px 0;
+  border-radius: 5px;
+  font-weight: 500;
+  color: white;
+}
+
+.flash-success {
+  background-color: #2ecc71;
+}
+
+.flash-danger {
+  background-color: #e74c3c;
+}
+
+.flash-warning {
+  background-color: #f39c12;
+}
+
+.flash-info {
+  background-color: #3498db;
 }
 @keyframes fadeSlideUp {
     0% {

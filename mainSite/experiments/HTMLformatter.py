@@ -5,18 +5,22 @@ def format_article_html(article: dict) -> str:
     tags = article.get("Tags", [])
     sections = article.get("article_body", {}).get("Sections", [])
 
-    raw_desc = ""
+    # raw_desc = ""
     # if sections:
     #     raw_desc = sections[0].get("content", "").strip().replace('\n', ' ')
     description = article.get("description","A very cool article!")
 
+    tags_text = ', '.join([escape(tag) for tag in tags])
+
     html_head = {
         f'<meta name="description" content="{description}">',
         f'<meta name="robots" content="index, follow">',
-        f'<meta property="og:title" content="{title}">',
+        f'<meta property="og:title" content="{title} | The Unfiltered">',
         f'<meta property="og:description" content="{description}">',
+        f'<meta name="twitter:card" content="summary_large_image">',
         f'<meta name="twitter:title" content="{title}">',
         f'<meta name="twitter:description" content="{description}">',
+        f'<meta name="keywords" content="{tags_text}">'
     }
     html_body = [
         '<div class="article-container">',

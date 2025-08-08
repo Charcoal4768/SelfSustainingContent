@@ -76,29 +76,33 @@ def extract_comment(comments, current_depth=0, max_depth=3):
     return extracted
 
 def extract_from_discussion(discussions):
+    safe_results = []
     for discussion in discussions:
-        urls = discussion["url"]
+        urls = discussion.get("url", [])
+        discussion_result = discussion.copy()
+        discussion_result["comments"] = []
+        discussion_result["title"] = ""
         for url in urls:
-            url = url.rstrip("/") + ".json"
-            response = requests.get(url, headers=headers)
-            if not response.status_code == 200:
-                print(f"Failed to fetch {url}")
-                return None
-            
-            data = response.json()
-
-            post_info = data[0]["data"]["children"][0]["data"]
-            post_title = post_info["title"]
-            # post_body = post_info["selftext"]
-
-            comments_data = data[1]["data"]["children"]
-            extracted_comments = extract_comment(comments_data)
-            discussion["title"] = post_title
-            # discussion["body"] = post_body
-            discussion["comments"] = extracted_comments
-        del discussion["url"]
-
-    return discussions
+            try:
+                url = url.rstrip("/") + ".json"
+                response = requests.get(url, headers=headers, timeout=10)
+                if response.status_code != 200:
+                    print(f"Failed to fetch {url}")
+                    continue
+                data = response.json()
+                post_info = data[0]["data"]["children"][0]["data"]
+                post_title = post_info.get("title", "")
+                comments_data = data[1]["data"].get("children", [])
+                extracted_comments = extract_comment(comments_data)
+                discussion_result["title"] = post_title
+                discussion_result["comments"].extend(extracted_comments)
+            except Exception as e:
+                print(f"[ERROR] Exception in extract_from_discussion for {url}: {e}")
+                continue
+        if "url" in discussion_result:
+            del discussion_result["url"]
+        safe_results.append(discussion_result)
+    return safe_results
 
 
 def find_discussions(url, amount):

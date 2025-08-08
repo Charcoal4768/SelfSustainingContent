@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
-{% block meta %}<meta name="csrf-token" content="{{ csrf_token }}">{% endblock %}
+{% block meta %}
+<meta name="csrf-token" content="{{ csrf_token }}">
+<meta name="publish_token" content="{{ publish_token }}">
+<meta name="room_id" content="{{ room_id }}">
+{% endblock %}
 {% block title %}Create an Article{% endblock %}
 {% block scripts %}
 <script src="{{ url_for('static', filename='flubber.min.js') }}"></script>
@@ -11,16 +15,17 @@
     <div class="pane-layout fw fh c">
         <div class="generator form-container animate up" id="admin-input">
             <form method="post" class="invert-color">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                 <div class="article-heading animate up"><h2>Generate An Article:</h2></div>
                 <div class="layer d animate right">
-                    <input placeholder="Product 1" name="product1" type="text">
+                    <input class="limited" placeholder="Product 1" name="product1" type="text">
                     <img class="tiny-icon down" src="{{url_for('static',filename='/images/qoute-black.svg')}}">
-                    <input placeholder="Product 2" name="product2" type="text">
+                    <input class="limited" placeholder="Product 2" name="product2" type="text">
                 </div>
                 <div class="layer d animate right">
-                    <input placeholder="Affiliate 1" name="affiliate1" type="text">
+                    <input class="limited" placeholder="Affiliate 1" name="affiliate1" type="text">
                     <img class="tiny-icon down" src="{{url_for('static',filename='/images/qoute-black.svg')}}">
-                    <input placeholder="Affiliate 2" name="affiliate2" type="text">
+                    <input class="limited" placeholder="Affiliate 2" name="affiliate2" type="text">
                 </div>
                 <div class="layer d animate right">
                     <input type="checkbox" name="includeHN" checked> <h3>Include HackerNews?</h3>

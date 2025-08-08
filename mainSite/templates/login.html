@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}Log In{% endblock %}
+{% block meta %}
+<meta property="og:title" content="Log In | The Unfiltered">
+<meta name="title" content="Log In">
+<meta property="og:description" content="Log into your Unfiltered account.">
+<meta name="keywords" content="login, signin, unfiltered, account">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Log In | The Unfiltered">
+<meta name="twitter:description" content="Log into your Unfiltered account.">
+{% endblock %}
+{% block content %}
+<div class="page-lander">
+    <div class="pane-layout fw fh c">
+        <div class="form-container animate up" id="login-form-container">
+            <form method="post" class="invert-color">
+                <input type="hidden" name="csrf_token" value="{{ form.csrf_token._value() }}">
+                <div class="article-heading animate up"><h2>Welcome Back</h2></div>
+                <div class="sp vertical-layer animate right">
+                    <div class="layer d animate up">
+                        <input type="text" name="email" placeholder="Email" autocomplete="email">
+                    </div>
+                    <div class="layer d animate up">
+                        <input type="password" name="password" placeholder="Password" autocomplete="current-password">
+                    </div>
+                </div>
+                <div class="sp layer animate up">
+                    <button type="submit" name="Login">Log In</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

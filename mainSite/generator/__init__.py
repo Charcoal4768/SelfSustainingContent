@@ -26,7 +26,7 @@ class Prompt:
         if not os.path.exists(schema_path):
             raise FileNotFoundError(f"Prompt template not found at {schema_path}")
 
-        with open(system_prompt_path, "r") as f:
+        with open(system_prompt_path, "r", encoding="utf-8-sig", errors="replace") as f:
             self.system_prompt = f.read()
         
         with open(schema_path,"r") as f:

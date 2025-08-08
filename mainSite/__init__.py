@@ -1,98 +1,62 @@
-from flask_wtf import CSRFProtect
-from flask import Flask, json, render_template
-from werkzeug.exceptions import HTTPException
+from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, current_user
-from dotenv import load_dotenv
-from .sockets import socketio
+from flask_login import LoginManager
+from flask_wtf import CSRFProtect
+from flask_socketio import SocketIO, join_room, leave_room
 from flask_migrate import Migrate
-# from .experiments.secutiry_token import emit_token_periodically
+from dotenv import load_dotenv
+from werkzeug.exceptions import HTTPException
 import os
+load_dotenv()
 
+app = Flask(__name__)
+app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+app.config['SQLALCHEMY_DATABASE_URI'] = (
+    os.getenv("DATABASE_URL") or
+    f"postgresql://{os.getenv('POSTGRES_USERNAME')}:{os.getenv('POSTGRES_PASSWORD')}@"
+    f"{os.getenv('POSTGRES_HOST')}:{os.getenv('POSTGRES_PORT')}/{os.getenv('POSTGRES_DATABASE')}"
+)
+app.config['SESSION_COOKIE_SECURE'] = not app.debug and not app.testing
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+# GLOBAL EXTENSIONS — import from here only
 db = SQLAlchemy()
-
 csrf = CSRFProtect()
-# socketio = SocketIO()
+socketio = SocketIO(app=app, cors_allowed_origins="*", async_mode="threading")
 
-def make_app():
-    load_dotenv()
-    database_url = os.getenv("DATABASE_URL")
+db.init_app(app)
+csrf.init_app(app)
+Migrate(app, db)
 
-    if not database_url:
-        # fallback for local dev
-        sql_pass = os.getenv("POSTGRES_PASSWORD")
-        sql_user = os.getenv("POSTGRES_USERNAME")
-        sql_db = os.getenv("POSTGRES_DATABASE")
-        sql_port = os.getenv("POSTGRES_PORT")
-        sql_host = os.getenv("POSTGRES_HOST")
-        database_url = f"postgresql://{sql_user}:{sql_pass}@{sql_host}:{sql_port}/{sql_db}"
+from .views import views
+from .auth import auth
+app.register_blueprint(auth)
+app.register_blueprint(views)
 
-    app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-    # app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    #     "connect_args": {
-    #         "sslmode": "require"
-    #     }
-    # }
-    app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
-    app.config['SESSION_COOKIE_SECURE'] = not app.debug and not app.testing# Only sent over HTTPS
-    app.config['SESSION_COOKIE_HTTPONLY'] = True     # JS can’t access cookie
-    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'    # Prevent CSRF
-    print(f"postgresql://{sql_user}:{sql_pass}@{sql_host}:{sql_port}/{sql_db}")
+# LoginManager
+login_manager = LoginManager()
+login_manager.init_app(app)
+@login_manager.user_loader
+def load_user(user_id):
+    from .models import Users
+    try:
+        return Users.query.get(int(user_id))
+    except (TypeError, ValueError):
+        return None
     
-    from .views import views
-    from .auth import auth
+# Error handler
+@app.errorhandler(Exception)
+def handle_exception(e):
+    if isinstance(e, HTTPException):
+        return e
+    return render_template("error.html", error_code=e), 500
 
-    app.register_blueprint(auth)
-    app.register_blueprint(views)
+# Optional DB bootstrap
+with app.app_context():
+    db.create_all()
 
-    LogMan = LoginManager()
-
-    @LogMan.user_loader
-    def load_user(user_id):
-        from .models import Users
-        try:
-            return Users.query.get(int(user_id))
-        except (TypeError, ValueError):
-            return None
-        
-    @app.errorhandler(Exception)
-    def handle_exception(e):
-        # pass through HTTP errors
-        if isinstance(e, HTTPException):
-            return e
-
-        # now you're handling non-HTTP exceptions only
-        return render_template("500_generic.html", e=e), 500
-    
-    LogMan.init_app(app)
-    db.init_app(app)
-    csrf.init_app(app)
-
-    make_db(app)
-    make_socket(app)
-    # emit_token_periodically(socketio)
-    migrate = Migrate(app, db)
-
-    return app
-
-def make_db(app):
-    with app.app_context():
-        db.create_all()
-
-def make_socket(app):
-    socketio.init_app(app, cors_allowed_origins="*")
-
-    # @socket.on('connect')
-    # def handle_connect():
-    #     if current_user.is_authenticated:
-    #         print(f"{current_user.username} connected")
-    #     else:
-    #         print("Anonymous user connected")
-    
-    # @socket.on('disconnect')
-    # def handle_disconnect():
-    #     if current_user.is_authenticated:
-    #         print(f"{current_user.username} disconnected")
-    #     else:
-    #         print("Anonymous user disconnected")
+@socketio.on('join_room')
+def on_join(data):
+    room = data.get('room')
+    join_room(room)
+    print(f"{request.sid} has joined room {room}")
