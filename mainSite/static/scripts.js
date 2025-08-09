@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const links = document.querySelector('div.links');
     // let isSyncing = false;
 
-    fakebar.addEventListener('input', () => {realbar.value = fakebar.value});
+    fakebar.addEventListener('input', () => {realbar.textContent = fakebar.value});
     realbar.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();

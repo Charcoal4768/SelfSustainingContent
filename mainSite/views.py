@@ -83,6 +83,22 @@ def ShowPost():
     article_extracted = format_article_html(article_extracted.json_response)
     return render_template('post.html',article=article_extracted)
 
+@views.route("/trending")
+def TrendingPage():
+    return render_template('browse.html', current_user=current_user)
+
+@views.route("/about")
+def AboutPage():
+    return render_template('about.html', current_user=current_user)
+
+@views.route("/profile")
+def ProfilePage():
+    return render_template('profile.html', current_user=current_user)
+
+@views.route("/settings")
+def SettingsPage():
+    return render_template('settings.html', current_user=current_user)
+
 @csrf.exempt
 @views.route('/api/publish', methods=['POST'])
 def Publish():

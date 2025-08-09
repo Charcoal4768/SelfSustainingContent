@@ -308,14 +308,13 @@ select option {
     top: 0;
     left: 0;
     padding: 5px 15px;
-    border: 1px solid red;
     width: 100%;
     transition: 300ms ease-in;
     /* justify-content: center; */
     height: 70px;
     background: var(--light-grey);
 }
-.real-search textarea{
+.real-search .search textarea{
     border: none;
     resize: none;
     outline: none;
@@ -447,6 +446,10 @@ nav .main{
 }
 .icon-action{
     padding: 15px;
+}
+.icon-action a{
+    text-decoration: none;
+    color: unset;
 }
 .icon-action .text{
     margin-left: 10px;
@@ -846,14 +849,14 @@ p.tag.editable::before{
     }
 } */
 
-@media (max-width: 1200px){
+@media (max-width: 1280px){
     nav .links{
         margin-right: clamp(20px,5%,50px);
         margin-left: auto;
     }
 }
 
-@media (max-width:1080px){
+@media (max-width: 1180px){
     p.tag{
         font-size: var(--small-font-size);
         line-height: var(--small-font-size);
@@ -868,22 +871,40 @@ p.tag.editable::before{
     }
 }
 
-@media (max-width: 880px) {
+@media (max-width: 1080px) {
     form{
         display: block;
         margin: auto;
         border: none;
         text-align: center;
     }
+    :root{
+        --large-font-size: 2.25rem;
+        --medium-font-size: 1.5rem;
+        --normal-font-size: 1rem;
+        --small-font-size: 0.70rem;
+    }
+    .logo a{
+        font-size: var(--large-font-size);
+    }
+    input{
+        width: 20ch;
+    }
     form .article-heading{
         text-align: center;
     }
     .pane-layout {
         flex-direction: column;
+        flex-wrap: nowrap;
     }
     .layer.d{
         justify-content: center;
         align-items: center;
+        margin: 20px 0px 20px 0px;
+    }
+    .layer{
+        margin-right: 0px;
+        margin-left: 0px;
     }
 }
 
@@ -891,8 +912,10 @@ p.tag.editable::before{
     .search{
         max-width: none;
         flex-grow: 0;
-        width: fit-content;
         padding: 10px;
+    }
+    .real-search .search{
+        flex-grow: 1;
     }
     .hamburger-bars{
         display: block;
@@ -906,10 +929,22 @@ p.tag.editable::before{
     nav .main{
         justify-content: flex-end;
     }
+    nav .main {
+        flex-grow: 1;
+    }
     nav .logo{
         margin-right: 0px;
     }
     nav .logo a{
         font-size: var(--medium-font-size);
+    }
+    :root{
+        --large-font-size: 2rem;
+        --medium-font-size: 1.25rem;
+        --normal-font-size: 1rem;
+        --small-font-size: 0.7rem;
+    }
+    body{
+        line-height: unset;
     }
 }
