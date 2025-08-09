@@ -197,6 +197,10 @@ svg{
     z-index: 3;
     animation: bobble-b 8s ease-in-out 0s infinite normal forwards;
 }
+.dynamic-svg-image.symbol.small{
+    width: clamp(64px,15vw,512px);
+    height: clamp(64px,15vw,512px);
+}
 #status-box{
     text-align: center;
     font-family: 'Inter', sans-serif;
@@ -292,6 +296,11 @@ textarea.search-bar{
 }
 textarea.search-bar::placeholder{
     color: white;
+}
+select option {
+    background-color: #f0f0f0; /* Example: light gray */
+    color: #333; /* Example: dark text color */
+    padding: 5px;
 }
 .real-search{
     position: absolute;
