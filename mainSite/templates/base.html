@@ -8,22 +8,22 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="theunfiltered">
-    <meta property="og:image" content="{{ url_for('static', filename='images/THE UNFILTERED.png') }}">
+    <meta property="og:image" content="{{ url_for('static', filename='images/THE UNFILTERED.png', _external=True) }}">
     <meta property="og:image:width" content="1500">
     <meta property="og:image:height" content="500">
-    <meta name="twitter:image" content="{{ url_for('static', filename='images/THE UNFILTERED.png') }}">
+    <meta name="twitter:image" content="{{ url_for('static', filename='images/THE UNFILTERED.png', _external=True) }}">
     {% block meta %}{% endblock %}
     <title>{% block title %}Page Title{% endblock %}</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet' href='{{ url_for("static", filename="styles.css") }}'>
-    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
-    <script src="{{ url_for('static', filename='flubber.min.js') }}"></script>
+    <link rel='stylesheet' href='{{ url_for("static", filename="styles.css", _external=True) }}'>
+    <script src="{{ url_for('static', filename='scripts.js', _external=True) }}"></script>
+    <script src="{{ url_for('static', filename='flubber.min.js', _external=True) }}"></script>
     {% block scripts %}{% endblock %}
 </head>
 
 <body>
 <nav class="container">
-    <div class="logo" id="logo"><a href="{{ url_for('views.MainPage') }}">UNFILTERED</a></div>
+    <div class="logo" id="logo"><a href="{{ url_for('views.MainPage', _external=True) }}">UNFILTERED</a></div>
     <div class="main">
         <div class="hamburger-bars" id="hamburger-menu">
             <div></div>
@@ -39,10 +39,10 @@
         </div>
         <div class="links">
             {% if current_user.is_authenticated %}
-                <a href="{{ url_for('auth.logout') }}">Logout</a>
+                <a href="{{ url_for('auth.logout', _external=True) }}">Logout</a>
             {% else %}
-                <a href="{{ url_for('auth.signup') }}">Sign Up</a>
-                <a href="{{ url_for('auth.login') }}">Login</a>
+                <a href="{{ url_for('auth.signup', _external=True) }}">Sign Up</a>
+                <a href="{{ url_for('auth.login', _external=True) }}">Login</a>
             {% endif %}
         </div>
     </div>
@@ -63,11 +63,11 @@
             <img src="{{ url_for('static', filename='/images/user.svg') }}">
             <div class="text">
                 {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('views.ProfilePage') }}"><h3>{{ current_user.username }}</h3></a>
-                    <a href="{{ url_for('views.ProfilePage') }}"><p>Your account info</p></a>
+                    <a href="{{ url_for('views.ProfilePage', _external=True) }}"><h3>{{ current_user.username }}</h3></a>
+                    <a href="{{ url_for('views.ProfilePage', _external=True) }}"><p>Your account info</p></a>
                 {% else %}
-                    <a href="{{ url_for('auth.signup') }}"><h3>You haven't signed up</h3></a>
-                    <a href="{{ url_for('auth.signup') }}"><p>Sign up to unlock more content</p></a>
+                    <a href="{{ url_for('auth.signup', _external=True) }}"><h3>You haven't signed up</h3></a>
+                    <a href="{{ url_for('auth.signup', _external=True) }}"><p>Sign up to unlock more content</p></a>
                 {% endif %}
             </div>
         </div>
@@ -77,18 +77,18 @@
         <div class="layer">
             <img src="{{ url_for('static', filename='/images/flame.svg') }}">
             <div class="text">
-                <a href="{{ url_for('views.TrendingPage') }}"><h3>Trending</h3></a>
-                <a href="{{ url_for('views.TrendingPage') }}"><p>See what's Trending</p></a>
+                <a href="{{ url_for('views.TrendingPage', _external=True) }}"><h3>Trending</h3></a>
+                <a href="{{ url_for('views.TrendingPage', _external=True) }}"><p>See what's Trending</p></a>
             </div>
         </div>
     </div>
 
     <div class="icon-action">
         <div class="layer">
-            <img src="{{ url_for('static', filename='/images/gear.svg') }}">
+            <img src="{{ url_for('static', filename='/images/gear.svg', _external=True) }}">
             <div class="text">
-                <a href="{{ url_for('views.SettingsPage') }}"><h3>Settings</h3></a>
-                <a href="{{ url_for('views.SettingsPage') }}"><p>Site Settings</p></a>
+                <a href="{{ url_for('views.SettingsPage', _external=True) }}"><h3>Settings</h3></a>
+                <a href="{{ url_for('views.SettingsPage', _external=True) }}"><p>Site Settings</p></a>
             </div>
         </div>
     </div>
@@ -99,9 +99,9 @@
         <h2>Some links to explore</h2>
     </div>
     <div class="links">
-        <a href="{{ url_for('views.MainPage') }}">Home</a>
-        <a href="{{ url_for('views.TrendingPage') }}">Browse</a>
-        <a href="{{ url_for('views.AboutPage') }}">About</a>
+        <a href="{{ url_for('views.MainPage', _external=True) }}">Home</a>
+        <a href="{{ url_for('views.TrendingPage', _external=True) }}">Browse</a>
+        <a href="{{ url_for('views.AboutPage', _external=True) }}">About</a>
     </div>
 </div>
 
