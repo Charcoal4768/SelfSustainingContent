@@ -1,5 +1,16 @@
 {% extends 'base.html' %}
 {% block title %}Home{% endblock %}
+{% block meta %}
+<meta property="og:title" content="Home - The Unfiltered">
+<meta property="og:description" content="Discover the most honest reviews on The Unfiltered.">
+<meta property="og:url" content="{{ url_for('views.MainPage', _external=True) }}">
+<meta property="og:title" content="Read | The Unfiltered">
+<meta name="title" content="Read | The Unfiltered">
+<meta name="keywords" content="Unfiltered, News, Tech, Tech Reviews">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Read | The Unfiltered">
+<meta name="twitter:description" content="The Unfiltered. The place for the most unfiltered reviews.">
+{% endblock %}
 {% block scripts %}
 <script src="{{url_for('static',filename='home.js')}}" type="module"></script>
 {% endblock %}
