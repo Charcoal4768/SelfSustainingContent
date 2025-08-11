@@ -2,8 +2,50 @@
 {% block title %}{{article[0] | safe }}{% endblock %}
 {% block meta %}
 {{article[1] | safe}}
+<meta name="publish_token" content="{{ publish_token }}">
+<meta name="post_id" content="{{ post_id }}">
+<meta name="room_id" content="{{ room_id }}">
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
+<script src="{{ url_for('static', filename='comment_handler.js') }}" type="module"></script>
 {% endblock %}
 {% block content %}
 {{article[2] | safe}}
-
+<div class="main-page">
+    <div class="comment-section">
+        <div class="post-comment animate right">
+            {% if current_user.is_authenticated %}
+            <textarea id="comment-textarea" class="comment-textarea" placeholder="Write a comment..."></textarea>
+            <button class="send-comment" id="send-comment-button">
+                <img class="tiny-icon" alt="send" src="{{url_for('static',filename='images/send.svg')}}">
+            </button>
+            {% else %}
+            <p>Please log in to comment.</p>
+            {% endif %}
+        </div>
+        {% if comments %}
+        <div class="comment-list">
+            {% for comment in comments %}
+                <div class="comment animate up">
+                    {% if current_user.is_authenticated and current_user.id == comment.user.id %}
+                    <div class="comment-actions">
+                        <button class="edit-comment animate up" data-comment-id="{{ comment.id }}">
+                            <img class="tiny-icon" alt="edit" src="{{url_for('static',filename='images/edit.svg')}}">
+                        </button>
+                        <button class="delete-comment animate up" data-comment-id="{{ comment.id }}">
+                            <img class="tiny-icon" alt="delete" src="{{url_for('static',filename='images/delete.svg')}}">
+                        </button>
+                    </div>
+                    {% endif %}
+                    <div class="comment-header"><h4>{{ comment.user.username }}</h4><span class="comment-date">{{ comment.date_time.strftime('%b %d, %Y %H:%M') }}</span></div>
+                    <p>{{ comment.body }}</p>
+                </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <div class="no-comments animate up">No Comments <em>Yet.</em></div>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

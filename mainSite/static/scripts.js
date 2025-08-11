@@ -36,6 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const realsearch = document.querySelector('div.real-search');
     const logo = document.querySelector('div.logo');
     const hamburger = document.querySelector('div.hamburger-bars');
+    const altburger = document.querySelector('div.menu');
     const sidemenu = document.querySelector('.burger-menu');
     const sidemenuclose = document.querySelector('.close#burger-close');
     const links = document.querySelector('div.links');
@@ -59,6 +60,10 @@ document.addEventListener("DOMContentLoaded", () => {
         sidemenu.classList.toggle('visible');
     }
     sidemenuclose.onclick = () => {
+        console.log("Side menu triggered");
+        sidemenu.classList.toggle('visible');
+    }
+    altburger.onclick = () => {
         console.log("Side menu triggered");
         sidemenu.classList.toggle('visible');
     }

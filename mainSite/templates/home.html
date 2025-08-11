@@ -43,4 +43,22 @@
         </div>
     </div>
 </div>
+<div class="main-page">
+    <div class="feed">
+        <div class="heading animate right">
+            <h2>Latest from The Unfiltered:</h2>
+        </div>
+        {% for category in feed_content %}
+            {% if category[1] %}
+                <h3>{{ category[0] }}</h3>
+                {% for post in category[1] %}
+                <article class="post">
+                    <h3><a href="{{ url_for('views.ShowPost', pid=post.id) }}">{{ post.title }}</a></h3>
+                    <p><a href="{{ url_for('views.ShowPost', pid=post.id) }}">{{ post.json_response.get('description', 'An interesting article about latest tech') }}</a></p>
+                </article>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}

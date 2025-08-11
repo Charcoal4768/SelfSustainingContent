@@ -7,9 +7,12 @@
     --black: black;
     --metal-grey:rgb(170, 170, 170);
     --concrete-grey: rgba(126,126,116,0.8);
-    --light-grey: #d9d9d9;
+    --light-grey: #adadad;
+    --lighter-grey: #e6e6e6;
     --grey: #a6a6a6;
+    --dark-grey: #737373;
     --darker-grey: #73737373;
+    --translucent-darker-grey: #161616be;
 }
 @font-face {
   font-family: 'Inter';
@@ -126,7 +129,7 @@ body{
     overflow-x: hidden;
 }
 .main-page{
-    background: grey;
+    background: white;
 }
 svg{
     /* Ensures SVGs have a shadow */
@@ -238,9 +241,9 @@ input::placeholder{
 /* input:focus::placeholder{
     font-size:var(--small-font-size);
 } */
-textarea.single-line-1{
+/* textarea.single-line-1{
 
-}
+} */
 textarea.multiline-1{
     resize: none;
     padding: 10px 15px;
@@ -339,6 +342,16 @@ select option {
     flex-shrink: 0;
     height: 1em;
     width: 1em;
+}
+.large-icon{
+    height: 100vh;
+    width: 50vw;
+}
+.large-icon img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
 }
 .down{
     transform: translateY(150%);
@@ -484,13 +497,15 @@ nav .main{
 .burger-menu .links > *:hover::after {
     transform: translateX(20px);
 }
-.burger-menu .spacer{
-    margin: auto;
+.spacer{
     flex-grow: 1;
-    width: 60%;
-    border-top: 1px solid var(--concrete-grey);
     height: max-content;
+}
+.burger-menu.spacer{
+    margin: auto;
+    width: 60%;
     border-bottom: 1px solid var(--concrete-grey);
+    border-top: 1px solid var(--concrete-grey);
 }
 /*TODO: add textarea.big*/
 form{
@@ -564,7 +579,7 @@ form .article-heading{
     border: none;
     text-align: left;
 }
-form button[type="submit"]{
+button[type="submit"]{
     font-size: var(--medium-font-size);
     padding: 20px 32px;
     border-radius: 24px;
@@ -579,6 +594,7 @@ form button[type="submit"]{
 button.primary-action {
     font-size: var(--medium-font-size);
     padding: 18px 30px;
+    width: 100%;
     border-radius: 24px;
     border: 2px solid black;
     background-color: white;
@@ -609,12 +625,14 @@ option{
     background-color: white;
     margin: auto;
     margin-top: 2em;
+    margin-bottom: 2em;
     max-width: 1000px;
     align-self: center;
     padding: 15px 15px;
     justify-content: center;
     align-items: center;
     text-align: center;
+    border-bottom: 1px solid black;
 }
 .tags-container{
     display: flex;
@@ -690,9 +708,6 @@ p.tag.editable::before{
 .admin h3 {
     color: white;
 }
-.admin{
-    /* background: linear-gradient(90deg, #000, #0e0e0e, var(--darker-grey)); */
-}
 .admin input{
     border-bottom: 1px solid white;
     color: white;
@@ -734,6 +749,78 @@ p.tag.editable::before{
 }
 .tl{
     text-align: left;
+}
+.menu{
+    position: fixed;
+    background-color: var(--dark-grey);
+    padding: 5px 45px;
+    top: 70px;
+    left: 0px;
+    animation: slideBackForth 6s ease-in-out 0s infinite alternate;
+}
+.menu .open{
+    font-size: var(--large-font-size);
+}
+@keyframes slideBackForth {
+    0% {
+        transform: translateX(-20px);
+    }
+    50% {
+        transform: translateX(0px);
+    }
+    100% {
+        transform: translateX(-20px);
+    }
+}
+.comment-section{
+    margin: auto;
+    margin-bottom: 100px;
+    max-width: 800px;
+    align-items: center;
+    align-content: center;
+}
+.post-comment{
+    width: 100%;
+    padding: 10px 15px;
+    display: flex;
+    border-radius: 24px;
+    border: 1px solid var(--darker-grey);
+}
+.send-comment{
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0px 10px;
+}
+textarea.comment-textarea{
+    flex-grow: 1;
+    padding: 0px 15px;
+    resize: none;
+    border: none;
+    border-right: 1px solid var(--darker-grey);
+    outline: none;
+}
+.comment{
+    position: relative;
+    padding: 15px 15px;
+    border-bottom: 1px solid var(--lighter-grey);
+}
+.comment-list{
+    display: flex;
+    flex-direction: column;
+    padding: 10px 20px;
+}
+.comment-header{
+    display: flex;
+}
+.comment-actions{
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.comment-date{
+    color: var(--grey);
+    padding: 0px 10px;
 }
 .flash-container {
   max-width: 800px;
@@ -873,10 +960,25 @@ p.tag.editable::before{
 
 @media (max-width: 1080px) {
     form{
-        display: block;
         margin: auto;
         border: none;
         text-align: center;
+        background-color: var(--translucent-darker-grey);
+        border-top-left-radius: 24px;
+        border-top-right-radius: 24px;
+        flex-grow: 1;
+        margin-bottom: 0;
+        justify-content: space-between;
+        padding-bottom: 32px;
+    }
+    .bg-f .form-container{
+        display: flex;
+        min-height: calc(100vh);
+        flex-direction: column;
+        padding: 32px;
+        padding-top: 100px;
+        padding-bottom: 0;
+        z-index: 8;
     }
     :root{
         --large-font-size: 2.25rem;
@@ -897,6 +999,19 @@ p.tag.editable::before{
         flex-direction: column;
         flex-wrap: nowrap;
     }
+    .pane-layout.bg-f > *{
+        position: absolute;
+    }
+    .pane-layout.bg-f > .large-icon {
+        flex: none;
+        width: 100%;
+        height: 100%;
+        z-index: 5;
+    }
+    button[type="submit"]{
+        border: none;
+        width: 100%;
+    }
     .layer.d{
         justify-content: center;
         align-items: center;
@@ -916,6 +1031,9 @@ p.tag.editable::before{
     }
     .real-search .search{
         flex-grow: 1;
+    }
+    .menu{
+        display: none;
     }
     .hamburger-bars{
         display: block;

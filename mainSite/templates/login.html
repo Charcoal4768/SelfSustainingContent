@@ -11,7 +11,7 @@
 {% endblock %}
 {% block content %}
 <div class="page-lander">
-    <div class="pane-layout fw fh c">
+    <div class="pane-layout fw fh c bg-f">
         <div class="form-container animate up" id="login-form-container">
             <form method="post" class="invert-color">
                 <input type="hidden" name="csrf_token" value="{{ form.csrf_token._value() }}">
@@ -27,7 +27,15 @@
                 <div class="sp layer animate up">
                     <button type="submit" name="Login">Log In</button>
                 </div>
+            <div class="spacer">
+            <div class="bodytext">
+                <p>Don't have an account? <a href="/signup">Sign up</a></p>
+            </div>
+            </div>
             </form>
+        </div>
+        <div class="large-icon">
+            <img src="{{ url_for('static', filename='images/login.png') }}" alt="The Unfiltered Logo">
         </div>
     </div>
 </div>

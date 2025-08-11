@@ -26,7 +26,7 @@ socketio = SocketIO(app=app, cors_allowed_origins="*", async_mode="threading")
 
 db.init_app(app)
 csrf.init_app(app)
-Migrate(app, db)
+migrate = Migrate(app, db)
 
 from .views import views
 from .auth import auth
