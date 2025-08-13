@@ -128,6 +128,13 @@ def handle_request_comment_token(data):
     token = generate_comment_token(current_user.id, article_id)
     socketio.emit("comment_token", {"token": token}, to=room_id)
 
+@views.route('/api/new_publish_token', methods=['GET'])
+@login_required
+def NewPublishToken():
+    if not current_user.is_admin:
+        return jsonify({"error": "Unauthorized"}), 403
+    return jsonify({"publish_token": issue_publish_token()})
+
 @csrf.exempt
 @views.route('/api/publish', methods=['POST'])
 def Publish():

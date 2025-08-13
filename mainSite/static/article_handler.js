@@ -2,7 +2,7 @@ import { getRandomPath, morphToNewPath } from "./svg_animator.js";
 document.addEventListener("DOMContentLoaded", function () {
     // Explicitly specify namespace and log connection
     const socket = io("/", { transports: ["websocket"] });
-    const PUBLISH_TOKEN = document.querySelector('meta[name="publish_token"]').getAttribute('content');
+    // const PUBLISH_TOKEN = document.querySelector('meta[name="publish_token"]').getAttribute('content');
     const ROOM_ID = document.querySelector('meta[name="room_id"]').getAttribute('content');
     const backgroundPath = document.getElementById("status-background");
     const secondaryPath = document.getElementById("status-secondary");
@@ -62,7 +62,18 @@ document.addEventListener("DOMContentLoaded", function () {
         publishButton.innerText = "Publish";
         publishButton.classList.add('animate', 'up', 'primary-action');
         publishButton.id = "article-publish";
-        publishButton.addEventListener("click", () => sendArticleRequest(PUBLISH_TOKEN)); //Wrapped in a lambda, () => so that it dosent just run send request on initialization but on click instead
+        publishButton.addEventListener("click", () => {
+            fetch("/api/new_publish_token", { credentials: "include" })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.publish_token) {
+                        sendArticleRequest(data.publish_token);
+                    } else {
+                        alert("You are not authorized to publish.");
+                    }
+                });
+            publishButton.disabled = true;
+        }); //Wrapped in a lambda, () => so that it dosent just run send request on initialization but on click instead
         let articleContainer = document.createElement('div');
         articleContainer.classList.add('article-container');
         let articleBodyContainer = document.createElement('div');

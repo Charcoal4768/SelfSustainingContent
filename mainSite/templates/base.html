@@ -66,7 +66,7 @@
 
     <div class="icon-action">
         <div class="layer">
-            <img src="{{ url_for('static', filename='/images/user.svg') }}">
+            <img src="{{ url_for('static', filename='images/user.svg') }}">
             <div class="text">
                 {% if current_user.is_authenticated %}
                     <a href="{{ url_for('views.ProfilePage', _external=True) }}"><h3>{{ current_user.username }}</h3></a>
@@ -81,7 +81,7 @@
 
     <div class="icon-action">
         <div class="layer">
-            <img src="{{ url_for('static', filename='/images/flame.svg') }}">
+            <img src="{{ url_for('static', filename='images/flame.svg') }}">
             <div class="text">
                 <a href="{{ url_for('views.TrendingPage', _external=True) }}"><h3>Trending</h3></a>
                 <a href="{{ url_for('views.TrendingPage', _external=True) }}"><p>See what's Trending</p></a>
@@ -91,7 +91,7 @@
 
     <div class="icon-action">
         <div class="layer">
-            <img src="{{ url_for('static', filename='/images/gear.svg', _external=True) }}">
+            <img src="{{ url_for('static', filename='images/gear.svg') }}">
             <div class="text">
                 <a href="{{ url_for('views.SettingsPage', _external=True) }}"><h3>Settings</h3></a>
                 <a href="{{ url_for('views.SettingsPage', _external=True) }}"><p>Site Settings</p></a>
