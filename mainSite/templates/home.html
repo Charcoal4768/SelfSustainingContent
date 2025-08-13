@@ -44,19 +44,32 @@
     </div>
 </div>
 <div class="main-page">
+    <div class="subheading animate right">
+        <h2>What to read:</h2>
+    </div>
     <div class="feed">
-        <div class="heading animate right">
-            <h2>Latest from The Unfiltered:</h2>
-        </div>
         {% for category in feed_content %}
             {% if category[1] %}
-                <h3>{{ category[0] }}</h3>
-                {% for post in category[1] %}
-                <article class="post">
-                    <h3><a href="{{ url_for('views.ShowPost', pid=post.id) }}">{{ post.title }}</a></h3>
-                    <p><a href="{{ url_for('views.ShowPost', pid=post.id) }}">{{ post.json_response.get('description', 'An interesting article about latest tech') }}</a></p>
-                </article>
-                {% endfor %}
+            <div class="heading animate right">
+                <h2>{{ category[0] }}</h2>
+            </div>
+                <div class="feed-content">
+                    {% for post in category[1] %}
+                    <article class="post animate right">
+                        <div class="heading">
+                        <h3><a href="{{ url_for('views.ShowPost', pid=post.id) }}">{{ post.title }}</a></h3>
+                        </div>
+                        <div class="body">
+                        <p><a href="{{ url_for('views.ShowPost', pid=post.id) }}">{{ post.json_response.get('description', 'An interesting article about latest tech') }}</a></p>
+                        </div>
+                        <div class="tags animate up">
+                            {% for tag in post.json_response.get('Tags', []) %}
+                            <span class="tag">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
             {% endif %}
         {% endfor %}
     </div>
