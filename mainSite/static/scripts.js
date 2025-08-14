@@ -92,13 +92,33 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-
 // Expose for later use
 window.observeAnimateElements = function (root = document) {
     root.querySelectorAll('.animate').forEach(el => {
         observer.observe(el);
     });
 };
+
+// document.addEventListener("DOMContentLoaded", () => {
+//     setTimeout(() => {
+//         const adScript = document.querySelector('script[data-ad-id="adsense-main"]');
+
+//         if (!adScript) {
+//             console.warn("AdSense script tag missing, blocked before DOM render.");
+//             return;
+//         }
+
+//         adScript.addEventListener('error', () => {
+//             console.warn("AdSense script failed to load, likely blocked.");
+//         });
+
+//         adScript.addEventListener('load', () => {
+//             if (!window.adsbygoogle) {
+//                 console.warn("AdSense script loaded but adsbygoogle object missing, likely neutered.");
+//             }
+//         });
+//     }, 0); // run after DOM parse
+// });
 
 function parseAsterisks(text) {
     // Bold-italic: ***text***

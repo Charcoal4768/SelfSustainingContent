@@ -3,8 +3,15 @@
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws: wss:;">
+<meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.google-analytics.com https://*.googletagmanager.com https://*.googletagservices.com https://*.adtrafficquality.google;
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' data: https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.adtrafficquality.google;
+    connect-src 'self' ws: wss: https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.google-analytics.com https://*.adtrafficquality.google;
+    frame-src 'self' https://*.googlesyndication.com https://*.doubleclick.net https://*.google.com https://*.adtrafficquality.google;
+">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="theunfiltered">
@@ -17,9 +24,11 @@
     {% endblock %}
     <title>{% block title %}Page Title{% endblock %}</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet' href='{{ url_for("static", filename="styles.css", _external=True) }}'>
-    <script src="{{ url_for('static', filename='scripts.js', _external=True) }}"></script>
-    <script src="{{ url_for('static', filename='flubber.min.js', _external=True) }}"></script>
+    <link rel='stylesheet' href='{{ url_for("static", filename="styles.css") }}'>
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+    <script src="{{ url_for('static', filename='flubber.min.js') }}"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4116085907286146"
+     crossorigin="anonymous"></script>
     {% block scripts %}{% endblock %}
 </head>
 
