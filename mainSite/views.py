@@ -2,7 +2,7 @@ from . import csrf, socketio, db
 from secrets import token_urlsafe
 from datetime import datetime, timedelta
 from .models import Comments, Articles
-from flask import Blueprint, render_template, redirect, url_for, request, jsonify, session
+from flask import Blueprint, app, render_template, redirect, send_from_directory, url_for, request, jsonify, session
 from flask_wtf.csrf import generate_csrf, validate_csrf, CSRFError
 from flask_login import current_user, login_required
 from .generator import SearchTermsPrompt
@@ -91,6 +91,10 @@ def ShowPost():
     return render_template('post.html', article=article_extracted, comments=comments,
                            publish_token=publish_token, current_user=current_user,
                            post_id=post_id, room_id=room_id)
+
+@app.route('/sitemap.xml')
+def static_from_root():
+    return send_from_directory(app.static_folder, request.path[1:])
 
 @views.route("/trending")
 def TrendingPage():

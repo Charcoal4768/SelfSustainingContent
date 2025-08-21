@@ -1,6 +1,5 @@
 from mainSite import app, socketio  # <- import socketio from __init__.py
 #gunicorn app:app would work?
-#
 
 if __name__ == '__main__':
     import eventlet.wsgi
