@@ -92,9 +92,10 @@ def ShowPost():
                            publish_token=publish_token, current_user=current_user,
                            post_id=post_id, room_id=room_id)
 
-@app.route('/sitemap.xml')
+@csrf.exempt
+@views.route('/sitemap.xml')
 def static_from_root():
-    return send_from_directory(app.static_folder, request.path[1:])
+    return send_from_directory(views.static_folder, request.path[1:])
 
 @views.route("/trending")
 def TrendingPage():
